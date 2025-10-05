@@ -26,9 +26,10 @@ function App() {
     return id.toString().padStart(3, "0")
   }
 
+  const [visibleCount, setVisibleCount] = useState(12);
+
   return (
     <main>
-      {console.log(pokemonList, pokemonType)}
       <section className='py-16'>
         <h2 className='sr-only'>포켓몬 검색 및 필터</h2>
         <form role='search'>
@@ -217,7 +218,7 @@ function App() {
         <div className='flex flex-col items-center gap-18'>
           <div className='grid grid-cols-6 gap-x-3 gap-y-10'>
             { 
-              pokemonList.map(pokemon => (
+              pokemonList.slice(0, visibleCount).map(pokemon => (
                 <article key={pokemon.id}>
                   {/* 반복문 써야함 */}
                   <div className='w-58 h-82'>
@@ -332,7 +333,17 @@ function App() {
               ))
             }
           </div>
-          <button className='text-[var(--gray-color)] py-4 w-58 border border-[var(--navy-color)] rounded-lg' type="button">더보기</button>
+          {
+            visibleCount < pokemonList.length 
+            && (
+              <button 
+                onClick={ () => setVisibleCount(list => list + 12)} 
+                className='text-[var(--gray-color)] py-4 w-58 border border-[var(--navy-color)] rounded-lg' 
+                type="button">
+                  더보기
+              </button>
+            )
+          }
         </div>
       </section>
     </main>

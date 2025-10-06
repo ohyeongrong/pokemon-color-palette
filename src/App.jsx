@@ -19,6 +19,8 @@ function App() {
   const searchSuggestions = usePokemonStore((state) => state.searchSuggestions);
   const getSearchSuggestions = usePokemonStore((state) => state.getSearchSuggestions);
 
+  const filterBySort = usePokemonStore((state) => state.filterBySort);
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await getPokemonDetails();
@@ -37,10 +39,32 @@ function App() {
   //첫 도감 보이는 갯수 이거 모바일 뭐 테블릿별.. 변경해야할거같은데??
   const [visibleCount, setVisibleCount] = useState(12);
 
+  //타입 담아 둘 변수
+  const [seletedType, setSeletedType] = useState('all');
+
+  //검색창 키워드 담아 둘 변수
+  const [keyword, setKeyword] = useState('');
+
+  //정렬 - 변수
+  const [sortOptValue, setSortOptValue] = useState('id-asc');
+  const [showSortOpts, setShowSortOpts] = useState(false);
+
+  // 정렬 옵션 매핑
+  const sortOptions = [
+  { label: '도감번호 순서', value: 'id-asc' },
+  { label: '도감번호 반대순서', value: 'id-desc' },
+  { label: '무거운 순서', value: 'weight-desc' },
+  { label: '가벼운 순서', value: 'weight-asc' },
+  { label: '키 큰 순서', value: 'height-desc' },
+  { label: '키 작은 순서', value: 'height-asc' },
+];
+
   //타입버튼 별 리스트 보이는 함수
   const handleTypeChange = async (e) => {
     const value = e.target.value
     filterByType(value)
+    setSeletedType(value)
+    setSortOptValue('id-asc')
   }
 
   //검색창 함수
@@ -60,10 +84,9 @@ function App() {
     filterByKeyword(keyword)
     setKeyword('')
     getSearchSuggestions('')
+    setSortOptValue('id-asc')
+    setSeletedType('')
   }
-
-  //검색창 키워드 담아 둘 변수
-  const [keyword, setKeyword] = useState('');
 
   //검색창 자동완성 부분 키워드 강조하기
   function keywordHighlight(value, keyword) {
@@ -88,8 +111,24 @@ function App() {
   }
 
 
+// 정렬 옵션 순 변경
+const handleOptChange = async (e) => {
+  const value = e.currentTarget.dataset.value
+  filterBySort(value)
+  setSortOptValue(value)
+  setShowSortOpts(false)
+}
+//정렬 옵션 선택한 한글 옵션명 적용
+function seletedOptLabel() {
+  const result = sortOptions.find(item => item.value === sortOptValue)
+
+  return result ? result.label : '도감번호 순서'
+}
+
+
+
   return (
-    <main className='container mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0 max-w-[1440px]'>
+    <main className='container relative mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0 max-w-[1440px]'>
       {console.log(allPokemonList)}
       <section className='py-16'>
         <h2 className='sr-only'>포켓몬 검색 및 필터</h2>
@@ -105,10 +144,10 @@ function App() {
                     id="type-all" 
                     type="radio" 
                     name="type" 
-                    value="all" 
+                    value="all"
+                    checked={ seletedType === 'all' } 
                     className='appearance-none peer'
-                    defaultChecked
-                    onChange={handleTypeChange}
+                    onChange={ handleTypeChange }
                   />
                   <label
                     htmlFor="type-all"
@@ -131,8 +170,9 @@ function App() {
                         type="radio" 
                         name="type" 
                         value={type.enType}
+                        checked={ seletedType === type.enType } 
                         className='appearance-none peer'
-                        onChange={handleTypeChange}
+                        onChange={ handleTypeChange }
                       />
                       <label 
                         htmlFor={`type-${type.enType}`}
@@ -257,32 +297,47 @@ function App() {
                 </div>
                 {/* 정렬기능 - 셀렉트 박스 */}
                 <div className='text-sm relative'>
-                  <div className='flex cursor-pointer'>
-                    <span className='text-[var(--gray-color)]'>도감번호 순서</span>
+                  <div 
+                    className='flex cursor-pointer'
+                    onClick={()=> setShowSortOpts(!showSortOpts)}
+                  >
+                    <span className='text-[var(--gray-color)]'>{ seletedOptLabel() }</span>
                     <span>
                       <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#7F8EA3"><path d="M480-372.92q-7.23 0-13.46-2.31t-11.85-7.92L274.92-562.92q-8.3-8.31-8.5-20.89-.19-12.57 8.5-21.27 8.7-8.69 21.08-8.69 12.38 0 21.08 8.69L480-442.15l162.92-162.93q8.31-8.3 20.89-8.5 12.57-.19 21.27 8.5 8.69 8.7 8.69 21.08 0 12.38-8.69 21.08L505.31-383.15q-5.62 5.61-11.85 7.92-6.23 2.31-13.46 2.31Z"/></svg>
                     </span>
                   </div>
-                  <ul className='
-                        absolute right-0
-                        flex flex-col gap-2
-                        w-40 py-4 px-5
-                        border border-[var(--navy-color)] rounded-2xl
-                        bg-[var(--gray-color)]/10 backdrop-blur-md
-                        text-[var(--gray-color)]'
-                        role="listbox">
-                    <li 
-                      className='flex justify-between text-white cursor-pointer' 
-                      role="option">
-                        도감번호 순서
-                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#fff"><path d="m389-354.38 305.54-305.54q7.83-7.93 18.34-8.12 10.5-.19 18.81 8.12 8.31 8.31 8.31 18.46 0 10.16-7.92 18.08L412.31-303.15q-9.76 9.84-22.76 9.84-13.01 0-22.86-9.84l-138-138q-7.92-7.93-8.3-18.2-.39-10.26 7.92-18.57t18.55-8.31q10.24 0 18.22 8.31L389-354.38Z"/></svg> 
-                    </li>
-                    <li>도감번호 반대순서</li>
-                    <li>무거운 순서</li>
-                    <li>가벼운 순서</li>
-                    <li>키 큰 순서</li>
-                    <li>키 작은 순서</li>
-                  </ul>
+                  {
+                    showSortOpts 
+                    &&
+                      <ul className='
+                            absolute right-0 z-40
+                            flex flex-col gap-2
+                            w-42 py-4 px-5
+                            border border-[var(--navy-color)] rounded-2xl
+                            bg-[var(--gray-color)]/10 backdrop-blur-md
+                            text-[var(--gray-color)]'
+                            role="listbox">
+                        {
+                          sortOptions.map((opt, i) => 
+                            <li
+                              key={opt.label + i}
+                              className={`flex justify-between cursor-pointer 
+                                ${ sortOptValue === opt.value ? 'text-white' : 'text-[var(--gray-color)]'}`} 
+                              role="option"
+                              data-value={opt.value}
+                              onClick={ handleOptChange }
+                              >
+                                {opt.label}
+                                {
+                                  sortOptValue === opt.value
+                                  &&
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#fff"><path d="m389-354.38 305.54-305.54q7.83-7.93 18.34-8.12 10.5-.19 18.81 8.12 8.31 8.31 8.31 18.46 0 10.16-7.92 18.08L412.31-303.15q-9.76 9.84-22.76 9.84-13.01 0-22.86-9.84l-138-138q-7.92-7.93-8.3-18.2-.39-10.26 7.92-18.57t18.55-8.31q10.24 0 18.22 8.31L389-354.38Z"/></svg> 
+                                }
+                            </li>
+                          )
+                        }
+                      </ul>
+                  }
                 </div>
               </div>
             </div>
@@ -423,6 +478,26 @@ function App() {
           }
         </div>
       </section>
+      <aside className='fixed right-10 bottom-10'>
+        <div className='flex flex-col gap-2'>
+          {/* 저장 목록 */}
+          <div className='w-10 h-10 
+            rounded-full border border-[var(--navy-color)]
+            flex justify-center items-center backdrop-blur-sm'>
+              <button className='w-7 h-7' type="button">
+                <img className='w-full h-full object-contain' src="https://data1.pokemonkorea.co.kr/newdata/pokedex/mid/000101.png" alt="" />
+              </button>
+          </div>
+          {/* 탑 이동 버튼 */}
+          <div className='w-10 h-10
+            rounded-full border border-[var(--navy-color)]
+            flex justify-center items-center backdrop-blur-sm'>
+              <button type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="#7F8EA3"><path d="M450-665.08 243.23-458.31q-8.92 8.92-20.88 8.81-11.96-.12-21.27-9.42-8.69-9.31-9-21.08-.31-11.77 9-21.08l253.61-253.61q5.62-5.62 11.85-7.92 6.23-2.31 13.46-2.31t13.46 2.31q6.23 2.3 11.85 7.92l253.61 253.61q8.31 8.31 8.5 20.58.19 12.27-8.5 21.58-9.31 9.3-21.38 9.3-12.08 0-21.39-9.3L510-665.08V-210q0 12.77-8.62 21.38Q492.77-180 480-180t-21.38-8.62Q450-197.23 450-210v-455.08Z"/></svg>
+              </button>
+          </div>
+        </div>
+      </aside>
     </main>
   )
 }

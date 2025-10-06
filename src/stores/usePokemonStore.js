@@ -65,6 +65,26 @@ const usePokemonStore = create((set, get)=>({
         );
 
         set({ searchSuggestions : suggestions.slice(0, 5) })
+    },
+
+    filterBySort : (opt) => {
+        const sortOpts = {
+            'id-asc':  (a, b) => a.id - b.id,
+            'id-desc': (a, b) => b.id - a.id,
+            'weight-asc': (a, b) => a.weight - b.weight,
+            'weight-desc': (a, b) => b.weight - a.weight,
+            'height-asc': (a, b) => a.height - b.height,
+            'height-desc': (a, b) => b.height - a.height,
+        }
+
+        const sortOpt = sortOpts[opt]
+
+        const sortedList = 
+        sortOpt
+        ? [...get().filteredPokemonList].sort(sortOpt)
+        : [...get().filteredPokemonList];
+
+        set({ filteredPokemonList : sortedList })
     }
 
 }));

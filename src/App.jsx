@@ -14,6 +14,10 @@ function App() {
 
   const filteredPokemonList = usePokemonStore((state) => state.filteredPokemonList);
   const filterByType = usePokemonStore((state) => state.filterByType);
+  const filterByKeyword = usePokemonStore((state) => state.filterByKeyword);
+  
+  const searchSuggestions = usePokemonStore((state) => state.searchSuggestions);
+  const getSearchSuggestions = usePokemonStore((state) => state.getSearchSuggestions);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,21 +34,68 @@ function App() {
     return id.toString().padStart(3, "0")
   }
 
+  //첫 도감 보이는 갯수 이거 모바일 뭐 테블릿별.. 변경해야할거같은데??
   const [visibleCount, setVisibleCount] = useState(12);
 
+  //타입버튼 별 리스트 보이는 함수
   const handleTypeChange = async (e) => {
     const value = e.target.value
     filterByType(value)
   }
 
+  //검색창 함수
+  const handleKeywordChange = async (e) => {
+    const value = e.target.value
+    setKeyword(value)
+    getSearchSuggestions(value)
+  }
+  //검색창 키워드 삭제
+  const handleKeywordDelte = async () => {
+    setKeyword('')
+    getSearchSuggestions('')
+  }
+
+  //검색 버튼 클릭
+  const handlekeywordClick = async () => {
+    filterByKeyword(keyword)
+    setKeyword('')
+    getSearchSuggestions('')
+  }
+
+  //검색창 키워드 담아 둘 변수
+  const [keyword, setKeyword] = useState('');
+
+  //검색창 자동완성 부분 키워드 강조하기
+  function keywordHighlight(value, keyword) {
+
+    const index = value.toString().indexOf(keyword);
+
+    if(index === -1){
+      return value
+    }
+
+    const before = value.substring(0, index);
+    const highlight = value.substring(index, index + keyword.length);
+    const after = value.substring(index + keyword.length);
+
+    return (
+      <>
+        {before}
+        <span className='text-white'>{highlight}</span>
+        {after}
+      </>
+    );
+  }
+
+
   return (
     <main className='container mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0 max-w-[1440px]'>
-      {console.log(allPokemonList, allTypeList)}
+      {console.log(allPokemonList)}
       <section className='py-16'>
         <h2 className='sr-only'>포켓몬 검색 및 필터</h2>
         <form role='search'>
-          {/* 포켓몬 타입 라디오 버튼 모바일 스와이퍼 사용해야할듯?*/}
           <div className='flex flex-col md:flex-row'>
+          {/* 포켓몬 타입 라디오 버튼 모바일 스와이퍼 사용해야할듯?*/}
             <fieldset className='md:flex-1/2 lg:flex-2/5'> 
               <legend className='sr-only'>포켓몬 타입 선택</legend>
               {/* 전체 버튼 */}
@@ -100,26 +151,41 @@ function App() {
                 }
               </div>
             </fieldset>
+            {/* 검색, 정렬 */}
             <div className='md:flex-1/2 lg:flex-3/5'>
               <div className='flex flex-col items-end gap-4'>
                 {/* 포켓몬 검색창 */}
-                <div className='reative w-full md:w-87'>
+                <div className='relative w-full md:w-87'>
                   <div className='text-sm w-full border border-[var(--navy-color)] rounded-full flex justify-between px-4 py-2'>
                     <input 
                       className='w-full placeholder:text-[var(--gray-color)]/50 
                         caret-[var(--gray-color)] focus:outline-none' 
                       type="search" 
-                      name="search" 
-                      placeholder='포켓몬 이름, 도감 번호 입력해주세요.' 
+                      name="search"
+                      value={keyword}
+                      placeholder='포켓몬 이름, 도감 번호 입력해주세요.'
+                      onChange={ handleKeywordChange }
                     />
-                    {/* 검색창에 입력되면 삭제 버튼 하나 더 띄울거임 */}
+                    {/* 버튼 영역 */}
                     <div className='flex gap-2'>
                       {/* 삭제버튼 */}
-                      <button className='hidden' type="button" aria-label="입력 내용 지우기">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#1D283A"><path d="m480-437.85 122.92 122.93q8.31 8.3 20.89 8.5 12.57.19 21.27-8.5 8.69-8.7 8.69-21.08 0-12.38-8.69-21.08L522.15-480l122.93-122.92q8.3-8.31 8.5-20.89.19-12.57-8.5-21.27-8.7-8.69-21.08-8.69-12.38 0-21.08 8.69L480-522.15 357.08-645.08q-8.31-8.3-20.89-8.5-12.57-.19-21.27 8.5-8.69 8.7-8.69 21.08 0 12.38 8.69 21.08L437.85-480 314.92-357.08q-8.3 8.31-8.5 20.89-.19 12.57 8.5 21.27 8.7 8.69 21.08 8.69 12.38 0 21.08-8.69L480-437.85Zm.07 337.85q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Z"/></svg>
-                      </button>
+                      {
+                        keyword 
+                          &&
+                          <button 
+                            type="button" 
+                            aria-label="입력 내용 지우기"
+                            onClick={handleKeywordDelte}
+                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#1D283A"><path d="m480-437.85 122.92 122.93q8.31 8.3 20.89 8.5 12.57.19 21.27-8.5 8.69-8.7 8.69-21.08 0-12.38-8.69-21.08L522.15-480l122.93-122.92q8.3-8.31 8.5-20.89.19-12.57-8.5-21.27-8.7-8.69-21.08-8.69-12.38 0-21.08 8.69L480-522.15 357.08-645.08q-8.31-8.3-20.89-8.5-12.57-.19-21.27 8.5-8.69 8.7-8.69 21.08 0 12.38 8.69 21.08L437.85-480 314.92-357.08q-8.3 8.31-8.5 20.89-.19 12.57 8.5 21.27 8.7 8.69 21.08 8.69 12.38 0 21.08-8.69L480-437.85Zm.07 337.85q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.92-148.21t81.21-120.68q51.29-51.31 120.63-81.25Q401.1-860 479.93-860q78.84 0 148.21 29.92t120.68 81.21q51.31 51.29 81.25 120.63Q860-558.9 860-480.07q0 78.84-29.92 148.21t-81.21 120.68q-51.29 51.31-120.63 81.25Q558.9-100 480.07-100Z"/></svg>
+                          </button>
+                      }
                       {/* 검색 버튼 */}
-                      <button type="submit" aria-label="검색 버튼">
+                      <button 
+                        type="submit" 
+                        aria-label="검색 버튼"
+                        onClick={ handlekeywordClick }
+                      >
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_18_491)">
                         <path d="M5.88818 11.7928C4.2545 11.7928 2.86467 11.219 1.7187 10.0714C0.572899 8.92372 0 7.53203 0 5.89638C0 4.26073 0.572899 2.86904 1.7187 1.72132C2.86467 0.573774 4.25423 0 5.88739 0C7.52055 0 8.91012 0.573774 10.0561 1.72132C11.2019 2.86904 11.7748 4.26099 11.7748 5.89717C11.7748 6.58374 11.6623 7.2402 11.4372 7.86657C11.2119 8.49311 10.9071 9.05874 10.5227 9.56347L13.7771 12.8229C13.9223 12.9681 13.9966 13.1246 13.9999 13.2923C14.0032 13.4599 13.9289 13.6198 13.7771 13.7719C13.6252 13.924 13.4629 14 13.2901 14C13.1174 14 12.9552 13.924 12.8033 13.7719L9.5489 10.5387C9.02466 10.9372 8.44984 11.2459 7.82443 11.4646C7.19902 11.6834 6.55361 11.7928 5.88818 11.7928ZM5.88739 10.4279C7.15097 10.4279 8.22093 9.98901 9.09727 9.11116C9.97379 8.23348 10.412 7.16189 10.412 5.89638C10.412 4.63088 9.97379 3.55928 9.09727 2.6816C8.22093 1.80375 7.15097 1.36482 5.88739 1.36482C4.62382 1.36482 3.55386 1.80375 2.67752 2.6816C1.801 3.55928 1.36274 4.63088 1.36274 5.89638C1.36274 7.16189 1.801 8.23348 2.67752 9.11116C3.55386 9.98901 4.62382 10.4279 5.88739 10.4279Z" fill="#7F8EA3"/>
@@ -134,67 +200,60 @@ function App() {
                     </div>
                   </div>
                   {/* 검색 자동완성 */}
-                  <div className='hidden absolute top-12'>
-                    <ul className='text-sm' role="listbox">
-                      <li 
-                        className='w-87 py-2 px-4
-                        border border-[var(--navy-color)] rounded-t-2xl
-                        bg-[var(--gray-color)]/10 backdrop-blur-md
-                        text-[var(--gray-color)]'
-                        role="option">
-                        <a href="#">
-                          <div className='flex justify-between items-center'>
-                            <div className='flex items-center gap-1'>
-                              <div className='w-6 h-6'>
-                                <img className='w-full h-full object-cover' src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/1.gif" alt="포켓몬이름" />
-                              </div>
-                              <dl>
-                                <dt className='hidden'>포켓몬</dt>
-                                <dd className='text-white'>이상해씨</dd>
-                              </dl>
-                            </div>
-                            <dl>
-                              <dt className='sr-only'>도감번호</dt>
-                              <dd className='text-xs'>#001</dd>
-                            </dl>
-                          </div>
-                        </a>
-                      </li>
-                      <li 
-                        className='w-87 py-2 px-4
-                        border-x border-[var(--navy-color)]
-                        bg-[var(--gray-color)]/10 backdrop-blur-md
-                        text-[var(--gray-color)]'
-                        role="option">
-                        <a href="#">
-                          <div className='flex justify-between items-center'>
-                            <div className='flex items-center gap-1'>
-                              <div className='w-6 h-6'>
-                                <img className='w-full h-full object-cover' src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/1.gif" alt="포켓몬이름" />
-                              </div>
-                              <dl>
-                                <dt className='hidden'>포켓몬</dt>
-                                <dd className='text-white'>이상해씨</dd>
-                              </dl>
-                            </div>
-                            <dl>
-                              <dt className='sr-only'>도감번호</dt>
-                              <dd className='text-xs'>#001</dd>
-                            </dl>
-                          </div>
-                        </a>
-                      </li>
-                    </ul>
-                    <div 
-                      className='flex items-center justify-end 
-                        w-87 py-2 px-4 
-                        bg-[var(--gray-color)]/10 rounded-b-2xl backdrop-blur-md
-                        text-xs text-[var(--gray-color)]/60
-                        border border-[var(--navy-color)]'
-                    >
-                      <button type="button">닫기</button>
+                  {
+                    searchSuggestions.length > 0 
+                    &&
+                    <div className='absolute w-full mt-2 z-50 backdrop-blur-md'>
+                      <ul className='text-sm w-full ' role="listbox">
+                        {
+                          searchSuggestions.map((pokemon, i)=>(
+                            <li 
+                              key={pokemon.name + i}
+                              className={
+                                i === 0
+                                ? 'w-full py-2 px-4 border border-[var(--navy-color)] rounded-t-2xl bg-[var(--gray-color)]/10 text-[var(--gray-color)]'
+                                : 'w-full py-2 px-4 border-x border-b border-[var(--navy-color)] bg-[var(--gray-color)]/10 text-[var(--gray-color)]'
+                            }
+                              role="option">
+                              <a href="#">
+                                <div className='flex justify-between items-center'>
+                                  <div className='flex items-center gap-1'>
+                                    <div className='w-6 h-6'>
+                                      <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} />
+                                    </div>
+                                    <dl>
+                                      <dt className='sr-only'>포켓몬</dt>
+                                      <dd className='text-[var(--gray-color)]'>
+                                        { keywordHighlight(pokemon.name, keyword) }
+                                      </dd>
+                                    </dl>
+                                  </div>
+                                  <dl>
+                                    <dt className='sr-only'>도감번호</dt>
+                                    <dd className='text-xs'>#{keywordHighlight(formatID(pokemon.id), keyword)}</dd>
+                                  </dl>
+                                </div>
+                              </a>
+                            </li>
+                          ))
+                        }
+                      </ul>
+                      <div 
+                        className='flex items-center justify-end 
+                          w-full py-2 px-4 
+                          bg-[var(--gray-color)]/10 rounded-b-2xl
+                          text-xs text-[var(--gray-color)]/60
+                          border-x border-b border-[var(--navy-color)]'
+                      >
+                        <button
+                          onClick={handleKeywordDelte}
+                          type="button"
+                          >
+                            닫기
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  }
                 </div>
                 {/* 정렬기능 - 셀렉트 박스 */}
                 <div className='text-sm relative'>

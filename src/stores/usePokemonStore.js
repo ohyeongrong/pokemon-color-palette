@@ -18,7 +18,6 @@ const usePokemonStore = create((set, get)=>({
         set({ allTypeList: filteredType })
     },
 
-
     // 타입버튼 별 리스트 변경
     filterByType : (type) => {
         set((state) => ({
@@ -85,6 +84,33 @@ const usePokemonStore = create((set, get)=>({
         : [...get().filteredPokemonList];
 
         set({ filteredPokemonList : sortedList })
+    },
+
+    // 저장 기능
+    collectPokemonList : [],
+
+    toggleCollect : (addList) => set((state) => {
+
+        const maxCollectCount = 3;
+        const isCollected = state.collectPokemonList.some(item => item.id === addList.id);
+
+        if(isCollected){
+            return {
+                collectPokemonList: state.collectPokemonList.filter(item => item.id !== addList.id)
+            }
+        }  
+        if(state.collectPokemonList.length >= maxCollectCount) {
+            alert('컬렉션 추가는 최대 3개까지 가능합니다')
+            return state;
+        }
+        return {
+            collectPokemonList: [...state.collectPokemonList, addList]
+        }
+    }),
+
+    // 도감번호 커스텀
+    formatId : (id) => {
+        return id.toString().padStart(3, "0")
     }
 
 }));

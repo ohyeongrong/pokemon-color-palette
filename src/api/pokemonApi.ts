@@ -76,7 +76,7 @@ export async function getPokemonDetails() {
                 
                 imageUrl: detailData.sprites.front_default,
                 imgGifFrontUrl: detailData.sprites.versions['generation-v']['black-white'].animated.front_default,
-                imgGifBackUrl: detailData.sprites.versions['generation-v']['black-white'].animated.ba_default,
+                imgGifBackUrl: detailData.sprites.versions['generation-v']['black-white'].animated.back_default,
             };
 
         } catch (err) {

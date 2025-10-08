@@ -117,9 +117,21 @@ const usePokemonStore = create((set, get)=>({
     colorCache : {},
     
     setColorCache: (id, color) => {
-        set({ colorCache: { ...get().colorCache, [id]: color } })
+        set(state => ({
+            colorCache: { ...state.colorCache, [id]: color }
+        }));
     },
 
+    getColorFromCache : (id) => {
+        return get().colorCache[id] || null;
+    },
+
+    selectedPokemon: null, 
+
+    openModal : (pokemonData) => set({selectedPokemon : pokemonData}),
+
+    closeModal: () => set({ selectedPokemon: null }),
+    
 }));
 
 

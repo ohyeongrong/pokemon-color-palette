@@ -1,7 +1,8 @@
 import usePokemonStore from '../stores/usePokemonStore.js'
 import { typeColors } from '../constants/typeColors.js'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ColorThief from 'colorthief'
+import PokemonTypeBadge from './PokemonTypeBadge.jsx';
 
 function PokemonCard({ pokemon }) {
 
@@ -12,7 +13,12 @@ function PokemonCard({ pokemon }) {
     const isCollected = collectPokemonList.some(p => p.id === pokemon.id)
 
     const [colors, setColors] = useState([])
-    const { colorCache, setColorCache } = usePokemonStore()
+
+    const colorCache = usePokemonStore((state) => state.colorCache);
+    const setColorCache = usePokemonStore((state) => state.setColorCache);
+
+    const openModal = usePokemonStore((state) => state.openModal);
+
 
     useEffect(() => {
     // 캐시에 있으면 바로 사용
@@ -47,9 +53,18 @@ function PokemonCard({ pokemon }) {
         .join("")}`
     }
 
+    const handleCardClick = (pokemon) => {
+        openModal(pokemon)
+    }
+
+    const handleAddCollectClick = (e) => {
+        e.stopPropagation();
+        toggleCollect(pokemon);
+    }
+
     return (
-        <article className='flex flex-wrap'>
-            <button type='button' className='w-58 h-82'>
+        <article onClick={ () => handleCardClick(pokemon)} className='flex flex-wrap cursor-pointer'>
+            <div className='w-58 h-82'>
                 <div className='w-full h-full relative'>
                     {/* 포켓몬 card 앞면*/}
                     <div
@@ -77,7 +92,7 @@ function PokemonCard({ pokemon }) {
                                 type="button" 
                                 className='flex p-0.5 rounded-full bg-[var(--gray-color)]' 
                                 aria-label='컬렉션 추가 하기'
-                                onClick={()=> toggleCollect(pokemon)}
+                                onClick={ handleAddCollectClick }
                             > 
                                 {
                                 isCollected 
@@ -91,8 +106,9 @@ function PokemonCard({ pokemon }) {
                         {/* 컬러칩 */}
                         <div className='flex gap-1'>
                             {
-                                colors.map(color => 
+                                colors.map((color, i) => 
                                     <div 
+                                    key={color + i}
                                     className={`w-3 h-3 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]`}
                                     style={{ backgroundColor: color }}>
 
@@ -104,16 +120,7 @@ function PokemonCard({ pokemon }) {
                         {/* 포켓몬 속성, 타입 */}
                         <div className='flex justify-between'>
                         {/* 타입 */}
-                        <ul className='flex gap-1'>
-                            {
-                            pokemon.types.map((type, i) => {
-                                const typeBadge = typeColors[type.koType] || 'bg-gray-300';
-                                return (
-                                <li key={type.enType + i} className={`text-xs ${typeBadge} rounded-full px-2 py-0.5`}>{type.koType}</li>
-                                )
-                            })
-                            }
-                        </ul>
+                        <PokemonTypeBadge pokemon={pokemon}/>
                         <dl>
                             <dt className='sr-only'>분류</dt>
                             <dd className='text-[13px] text-[var(--gray-color)]'>{pokemon.genus}</dd>
@@ -152,8 +159,9 @@ function PokemonCard({ pokemon }) {
                         {/* 컬러칩 */}
                         <div className='flex gap-1'>
                             {
-                                colors.map(color => 
-                                    <div 
+                                colors.map((color, i) => 
+                                    <div
+                                    key={color + i}
                                     className={`w-3 h-3 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]`}
                                     style={{ backgroundColor: color }}>
 
@@ -177,7 +185,7 @@ function PokemonCard({ pokemon }) {
                         </div>
                     </div>
                 </div>
-            </button>
+            </div>
         </article>
     )
 }

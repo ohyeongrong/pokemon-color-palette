@@ -7,6 +7,8 @@ function FloatingAside() {
     const collectPokemonList = usePokemonStore((state) => state.collectPokemonList);
     const toggleCollect = usePokemonStore((state) => state.toggleCollect);
 
+    const getColorFromCache = usePokemonStore((state) => state.getColorFromCache);
+
     const formatId = usePokemonStore((state) => state.formatId);
 
     //콜렉트 토글
@@ -14,6 +16,13 @@ function FloatingAside() {
     
     //aside 콜렉션 이미지 띄우기
     const lastPokemon = collectPokemonList.at(-1);
+
+    const handleRemove = (pokemon) => {
+        toggleCollect(pokemon);
+        if(collectPokemonList.length <= 1){
+            setShowCollect(false)
+        }
+    }
 
     return (
         <aside className='fixed right-10 bottom-10 z-60'>
@@ -29,8 +38,7 @@ function FloatingAside() {
                         <button
                             className='flex flex-wrap items-center justify-center w-7 h-7 ' 
                             type="button"
-                            onClick={() => setShowCollect(!showCollect)}
-                            >
+                            onClick={ ()=> setShowCollect(!showCollect) }>
                             {
                                 lastPokemon && <img className='w-full h-full object-contain' src={lastPokemon.imgGifFrontUrl} alt={lastPokemon.name} />
                             }
@@ -39,7 +47,7 @@ function FloatingAside() {
                     {
                         showCollect 
                         && (
-                            <div className='absolute right-0 bottom-25 w-54 backdrop-blur-sm'>
+                            <div className='absolute right-0 bottom-25 w-58 backdrop-blur-sm'>
                                 <ul className='text-sm w-full h-full' role="listbox">
                                     {
                                         collectPokemonList.map((pokemon, i)=>(
@@ -59,24 +67,35 @@ function FloatingAside() {
                                                     }
                                                 `}
                                             role="option">
-                                            <a href="#">
+                                            <div>
                                                 <div className='flex justify-between items-center' >
-                                                    <div className='flex items-center gap-1'>
+                                                    <div className='flex items-center gap-2'>
                                                         <div className='w-6 h-6'>
-                                                        <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} />
+                                                            <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} />
                                                         </div>
                                                         <dl className='flex items-center gap-1'>
-                                                        <dt className='sr-only'>포켓몬</dt>
-                                                        <dd className='text-white'>
-                                                            { pokemon.name }
-                                                        </dd>
-                                                        <dt className='sr-only'>도감번호</dt>
-                                                        <dd className='text-xs'>#{ formatId(pokemon.id) }</dd>
+                                                            <dt className='sr-only'>포켓몬</dt>
+                                                            <dd className='text-white'>
+                                                                { pokemon.name }
+                                                            </dd>
+                                                            <dt className='sr-only'>도감번호</dt>
+                                                            <dd className='text-xs'>#{ formatId(pokemon.id) }</dd>
                                                         </dl>
+                                                        <div className='flex gap-1'>
+                                                            {
+                                                                getColorFromCache(pokemon.id).map((color, i) => 
+                                                                    <div 
+                                                                        key={color + i}
+                                                                        className={`w-3 h-3 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]`}
+                                                                        style={{ backgroundColor: color }}>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                        </div>
                                                     </div>
-                                                    <DismissButton removeBtn onClick={()=> toggleCollect(pokemon)} fillcolor='var(--gray-color)'/>
+                                                    <DismissButton removeBtn onClick={()=>handleRemove(pokemon)} fillcolor='var(--gray-color)'/>
                                                 </div>
-                                            </a>
+                                            </div>
                                             </li>
                                         ))
                                     }

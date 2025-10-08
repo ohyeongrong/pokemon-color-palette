@@ -1,5 +1,7 @@
 import usePokemonStore from '../stores/usePokemonStore.js'
 import { typeColors } from '../constants/typeColors.js'
+import { useEffect, useState } from 'react'
+import ColorThief from 'colorthief'
 
 function PokemonCard({ pokemon }) {
 
@@ -9,9 +11,45 @@ function PokemonCard({ pokemon }) {
 
     const isCollected = collectPokemonList.some(p => p.id === pokemon.id)
 
+    const [colors, setColors] = useState([])
+    const { colorCache, setColorCache } = usePokemonStore()
+
+    useEffect(() => {
+    // 캐시에 있으면 바로 사용
+    if (colorCache[pokemon.id]) {
+        setColors(colorCache[pokemon.id])
+        return
+    }
+
+    // 이미지 로드 후 색상 추출
+    const img = new Image()
+    img.crossOrigin = "Anonymous"
+    img.src = pokemon.imageUrl
+
+    img.onload = () => {
+        const colorThief = new ColorThief()
+        try {
+            // 팔레트 3 컬러 추출
+            const palette = colorThief.getPalette(img, 3)
+            const hexColors = palette.map(([r, g, b]) => rgbToHex(r, g, b))
+            setColors(hexColors)
+            setColorCache(pokemon.id, hexColors)
+        } catch (err) {
+            console.error("색 추출 실패:", err)
+        }
+    }
+    }, [pokemon.id])
+
+    // RGB - HEX 변환 함수
+    function rgbToHex(r, g, b) {
+    return `#${[r, g, b]
+        .map(x => x.toString(16).padStart(2, "0"))
+        .join("")}`
+    }
+
     return (
         <article className='flex flex-wrap'>
-            <div className='w-58 h-82'>
+            <button type='button' className='w-58 h-82'>
                 <div className='w-full h-full relative'>
                     {/* 포켓몬 card 앞면*/}
                     <div
@@ -21,14 +59,14 @@ function PokemonCard({ pokemon }) {
                         p-6 w-full h-full backface-hidden'>
                         {/* 포켓몬 이름 */}
                         <div className='flex justify-between'>
-                        <div>
-                            <h3 className='text-2xl font-semibold'>{pokemon.name}</h3>
-                            <span className='text-sm text-[var(--gray-color)]'>{pokemon.englishName}</span>
-                        </div>
-                        <dl>
-                            <dt className='sr-only'>도감번호</dt>
-                            <dd className='text-[var(--gray-color)] font-semibold'>#{formatId(pokemon.id)}</dd>
-                        </dl>
+                            <div className='flex flex-col items-start'>
+                                <h3 className='text-2xl font-semibold'>{pokemon.name}</h3>
+                                <span className='text-sm text-[var(--gray-color)]'>{pokemon.englishName}</span>
+                            </div>
+                            <dl>
+                                <dt className='sr-only'>도감번호</dt>
+                                <dd className='text-[var(--gray-color)] font-semibold'>#{formatId(pokemon.id)}</dd>
+                            </dl>
                         </div>
                         {/* 포켓몬 이미지 */}
                         <div className='flex flex-col justify-center items-center gap-2 relative'>
@@ -52,9 +90,15 @@ function PokemonCard({ pokemon }) {
                         </div>
                         {/* 컬러칩 */}
                         <div className='flex gap-1'>
-                            <div className='w-3 h-3 bg-blue-400 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]'></div>
-                            <div className='w-3 h-3 bg-blue-400 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]'></div>
-                            <div className='w-3 h-3 bg-blue-400 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]'></div>
+                            {
+                                colors.map(color => 
+                                    <div 
+                                    className={`w-3 h-3 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]`}
+                                    style={{ backgroundColor: color }}>
+
+                                    </div>
+                                )
+                            }
                         </div>
                         </div>
                         {/* 포켓몬 속성, 타입 */}
@@ -85,14 +129,14 @@ function PokemonCard({ pokemon }) {
                         rotate-y-180'>
                         {/* 포켓몬 이름 */}
                         <div className='flex justify-between'>
-                        <div>
-                            <h3 className='text-2xl font-semibold'>{pokemon.name}</h3>
-                            <span className='text-sm text-[var(--gray-color)]'>{pokemon.englishName}</span>
-                        </div>
-                        <dl>
-                            <dt className='sr-only'>도감번호</dt>
-                            <dd className='text-[var(--gray-color)] font-semibold'>#{formatId(pokemon.id)}</dd>
-                        </dl>
+                            <div className='flex flex-col items-start'>
+                                <h3 className='text-2xl font-semibold'>{pokemon.name}</h3>
+                                <span className='text-sm text-[var(--gray-color)]'>{pokemon.englishName}</span>
+                            </div>
+                            <dl>
+                                <dt className='sr-only'>도감번호</dt>
+                                <dd className='text-[var(--gray-color)] font-semibold'>#{formatId(pokemon.id)}</dd>
+                            </dl>
                         </div>
                         {/* 포켓몬 이미지 */}
                         <div className='flex flex-col justify-center items-center gap-2'>
@@ -107,9 +151,15 @@ function PokemonCard({ pokemon }) {
                         </div>
                         {/* 컬러칩 */}
                         <div className='flex gap-1'>
-                            <div className='w-3 h-3 bg-blue-400 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]'></div>
-                            <div className='w-3 h-3 bg-blue-400 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]'></div>
-                            <div className='w-3 h-3 bg-blue-400 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]'></div>
+                            {
+                                colors.map(color => 
+                                    <div 
+                                    className={`w-3 h-3 rounded-full shadow-[inset_1px_1px_2px_rgba(0,0,0,0.8)]`}
+                                    style={{ backgroundColor: color }}>
+
+                                    </div>
+                                )
+                            }
                         </div>
                         </div>
                         {/* 포켓몬 정보 */}
@@ -127,7 +177,7 @@ function PokemonCard({ pokemon }) {
                         </div>
                     </div>
                 </div>
-            </div>
+            </button>
         </article>
     )
 }

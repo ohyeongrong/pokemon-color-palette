@@ -2,7 +2,7 @@ import DismissButton from './DismissButton.jsx'
 
 function PokemonDetailModal() {
     return (
-        <dialog className="fixed left-1/3 top-1/3 z-100 bg-[var(--black-color)]/80 backdrop-blur-sm rounded-2xl text-white">
+        <dialog open className="fixed left-1/3 top-1/3 z-100 bg-[var(--black-color)]/80 backdrop-blur-sm rounded-2xl text-white">
             <div className="p-16 w-xl relative">
                 <header className=' absolute right-4 top-4'>
                     <h2 className="sr-only">포켓몬 상세 모달창</h2>

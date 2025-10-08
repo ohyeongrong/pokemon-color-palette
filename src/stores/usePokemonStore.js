@@ -111,7 +111,14 @@ const usePokemonStore = create((set, get)=>({
     // 도감번호 커스텀
     formatId : (id) => {
         return id.toString().padStart(3, "0")
-    }
+    },
+
+    //컬러 추출 리스트
+    colorCache : {},
+    
+    setColorCache: (id, color) => {
+        set({ colorCache: { ...get().colorCache, [id]: color } })
+    },
 
 }));
 

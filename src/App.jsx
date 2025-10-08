@@ -6,6 +6,7 @@ import PokemonDetailModal from './components/PokemonDetailModal.jsx'
 import DismissButton from './components/DismissButton.jsx'
 import PokemonList from './components/PokemonList.jsx'
 import PokemonListControls from './components/PokemonListControls.jsx'
+import FloatingAside from './components/FloatingAside.jsx'
 
 function App() {
 
@@ -14,15 +15,6 @@ function App() {
 
   const allTypeList = usePokemonStore((state) => state.allTypeList);
   const setAllTypeList = usePokemonStore((state) => state.setAllTypeList);
-
-  const filteredPokemonList = usePokemonStore((state) => state.filteredPokemonList);
-  const filterByType = usePokemonStore((state) => state.filterByType);
-  const filterByKeyword = usePokemonStore((state) => state.filterByKeyword);
-  
-  const searchSuggestions = usePokemonStore((state) => state.searchSuggestions);
-  const getSearchSuggestions = usePokemonStore((state) => state.getSearchSuggestions);
-
-  const filterBySort = usePokemonStore((state) => state.filterBySort);
 
   const collectPokemonList = usePokemonStore((state) => state.collectPokemonList);
   const toggleCollect = usePokemonStore((state) => state.toggleCollect);
@@ -40,95 +32,9 @@ function App() {
   }, [setAllPokemonList])
   
 
-
-  //타입 담아 둘 변수
-  const [seletedType, setSeletedType] = useState('all');
-
-  //검색창 키워드 담아 둘 변수
-  const [keyword, setKeyword] = useState('');
-
-  //정렬 - 변수
-  const [sortOptValue, setSortOptValue] = useState('id-asc');
-  const [showSortOpts, setShowSortOpts] = useState(false);
-
   //콜렉트 토글
   const [showCollect, setShowCollect] = useState(false);
 
-  // 정렬 옵션 매핑
-  const sortOptions = [
-  { label: '도감번호 순서', value: 'id-asc' },
-  { label: '도감번호 반대순서', value: 'id-desc' },
-  { label: '무거운 순서', value: 'weight-desc' },
-  { label: '가벼운 순서', value: 'weight-asc' },
-  { label: '키 큰 순서', value: 'height-desc' },
-  { label: '키 작은 순서', value: 'height-asc' },
-];
-
-  //타입버튼 별 리스트 보이는 함수
-  const handleTypeChange = async (e) => {
-    const value = e.target.value
-    filterByType(value)
-    setSeletedType(value)
-    setSortOptValue('id-asc')
-  }
-
-  //검색창 함수
-  const handleKeywordChange = async (e) => {
-    const value = e.target.value
-    setKeyword(value)
-    getSearchSuggestions(value)
-  }
-  //검색창 키워드 삭제
-  const handleKeywordDelte = async () => {
-    setKeyword('')
-    getSearchSuggestions('')
-  }
-
-  //검색 버튼 클릭
-  const handlekeywordClick = async () => {
-    filterByKeyword(keyword)
-    setKeyword('')
-    getSearchSuggestions('')
-    setSortOptValue('id-asc')
-    setSeletedType('')
-  }
-
-  //검색창 자동완성 부분 키워드 강조하기
-  function keywordHighlight(value, keyword) {
-
-    const index = value.toString().indexOf(keyword);
-
-    if(index === -1){
-      return value
-    }
-
-    const before = value.substring(0, index);
-    const highlight = value.substring(index, index + keyword.length);
-    const after = value.substring(index + keyword.length);
-
-    return (
-      <>
-        {before}
-        <span className='text-white'>{highlight}</span>
-        {after}
-      </>
-    );
-  }
-
-
-// 정렬 옵션 순 변경
-const handleOptChange = async (e) => {
-  const value = e.currentTarget.dataset.value
-  filterBySort(value)
-  setSortOptValue(value)
-  setShowSortOpts(false)
-}
-//정렬 옵션 선택한 한글 옵션명 적용
-function seletedOptLabel() {
-  const result = sortOptions.find(item => item.value === sortOptValue)
-
-  return result ? result.label : '도감번호 순서'
-}
 
 //aside 콜렉션 이미지 띄우기
 const lastPokemon = collectPokemonList.at(-1);
@@ -161,50 +67,52 @@ const lastPokemon = collectPokemonList.at(-1);
                   </button>
                 </div>
                 {
-                  showCollect &&
-                  <div className='absolute bottom-24 right-0 w-54 backdrop-blur-sm'>
-                    <ul className='text-sm w-full' role="listbox">
-                        {
-                            collectPokemonList.map((pokemon, i)=>(
-                                <li 
-                                key={pokemon.name + i}
-                                className={`
-                                      w-full py-2 px-4 bg-[var(--gray-color)]/10 text-[var(--gray-color)]
-                                      border-[var(--navy-color)]
-                                      ${
-                                        collectPokemonList.length === 1
-                                          ? 'border border-[var(--navy-color)] rounded-2xl'
-                                          : i === 0
-                                          ? 'border border-[var(--navy-color)] rounded-t-2xl'
-                                          : i === collectPokemonList.length - 1
-                                          ? 'border-x border-b border-[var(--navy-color)] rounded-b-2xl'
-                                          : 'border-x border-b border-[var(--navy-color)]'
-                                      }
-                                    `}
-                                role="option">
-                                <a href="#">
-                                    <div className='flex justify-between items-center'>
-                                        <div className='flex items-center gap-1'>
-                                          <div className='w-6 h-6'>
-                                            <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} />
+                  showCollect 
+                  && (
+                    <div className='absolute bottom-24 right-0 w-54 backdrop-blur-sm'>
+                      <ul className='text-sm w-full' role="listbox">
+                          {
+                              collectPokemonList.map((pokemon, i)=>(
+                                  <li 
+                                  key={pokemon.name + i}
+                                  className={`
+                                        w-full py-2 px-4 bg-[var(--gray-color)]/10 text-[var(--gray-color)]
+                                        border-[var(--navy-color)]
+                                        ${
+                                          collectPokemonList.length === 1
+                                            ? 'border border-[var(--navy-color)] rounded-2xl'
+                                            : i === 0
+                                            ? 'border border-[var(--navy-color)] rounded-t-2xl'
+                                            : i === collectPokemonList.length - 1
+                                            ? 'border-x border-b border-[var(--navy-color)] rounded-b-2xl'
+                                            : 'border-x border-b border-[var(--navy-color)]'
+                                        }
+                                      `}
+                                  role="option">
+                                  <a href="#">
+                                      <div className='flex justify-between items-center'>
+                                          <div className='flex items-center gap-1'>
+                                            <div className='w-6 h-6'>
+                                              <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} />
+                                            </div>
+                                            <dl className='flex items-center gap-1'>
+                                              <dt className='sr-only'>포켓몬</dt>
+                                              <dd className='text-white'>
+                                                  { pokemon.name }
+                                              </dd>
+                                              <dt className='sr-only'>도감번호</dt>
+                                              <dd className='text-xs'>#{ formatId(pokemon.id) }</dd>
+                                            </dl>
                                           </div>
-                                          <dl className='flex items-center gap-1'>
-                                            <dt className='sr-only'>포켓몬</dt>
-                                            <dd className='text-white'>
-                                                { pokemon.name }
-                                            </dd>
-                                            <dt className='sr-only'>도감번호</dt>
-                                            <dd className='text-xs'>#{ formatId(pokemon.id) }</dd>
-                                          </dl>
-                                        </div>
-                                        <DismissButton removeBtn onClick={()=> toggleCollect(pokemon)} fillcolor='var(--gray-color)'/>
-                                    </div>
-                                </a>
-                                </li>
-                            ))
-                        }
-                    </ul>
-                  </div>
+                                          <DismissButton removeBtn onClick={()=> toggleCollect(pokemon)} fillcolor='var(--gray-color)'/>
+                                      </div>
+                                  </a>
+                                  </li>
+                              ))
+                          }
+                      </ul>
+                    </div>
+                  )
                 }
               </div>
           }
@@ -218,6 +126,7 @@ const lastPokemon = collectPokemonList.at(-1);
           </div>
         </div>
       </aside>
+      <FloatingAside />
     </>
   )
 }

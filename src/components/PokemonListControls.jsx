@@ -223,25 +223,26 @@ function PokemonListControls () {
                                         : 'w-full py-2 px-4 border-x border-b border-[var(--navy-color)] bg-[var(--gray-color)]/10 text-[var(--gray-color)]'
                                     }
                                         role="option">
-                                        <a href="#">
-                                        <div className='flex justify-between items-center'>
-                                            <div className='flex items-center gap-1'>
-                                            <div className='w-6 h-6'>
-                                                <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} />
+                                        <button type='button'>
+                                            <div className='flex justify-between items-center'>
+                                                <div className='flex items-center gap-1'>
+                                                <div className='w-6 h-6'>
+                                                    <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} />
+                                                </div>
+                                                <dl>
+                                                    <dt className='sr-only'>포켓몬</dt>
+                                                    <dd className='text-[var(--gray-color)]'>
+                                                    { keywordHighlight(pokemon.name, keyword) }
+                                                    </dd>
+                                                </dl>
+                                                </div>
+                                                <dl>
+                                                    <dt className='sr-only'>도감번호</dt>
+                                                    <dd className='text-xs'>#{keywordHighlight(formatId(pokemon.id), keyword)}</dd>
+                                                </dl>
+                                                
                                             </div>
-                                            <dl>
-                                                <dt className='sr-only'>포켓몬</dt>
-                                                <dd className='text-[var(--gray-color)]'>
-                                                { keywordHighlight(pokemon.name, keyword) }
-                                                </dd>
-                                            </dl>
-                                            </div>
-                                            <dl>
-                                            <dt className='sr-only'>도감번호</dt>
-                                            <dd className='text-xs'>#{keywordHighlight(formatId(pokemon.id), keyword)}</dd>
-                                            </dl>
-                                        </div>
-                                        </a>
+                                        </button>
                                     </li>
                                     ))
                                 }

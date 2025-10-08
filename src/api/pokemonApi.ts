@@ -5,6 +5,7 @@ const axiosInstance = axios.create({
     timeout: 3000,
 })
 
+// 포켓몬 60마리
 async function getPokemonList() {
     try {
         const res = await axiosInstance.get('/pokemon?limit=60');
@@ -15,81 +16,71 @@ async function getPokemonList() {
     }
 }
 
+// 각 포켓몬 상세정보
 export async function getPokemonDetails() {
+
     const pokemonList = await getPokemonList();
 
-    const pokemonPromises = pokemonList.map(async pokemon => {
-        try {
-            //포켓몬 영문 정보 
-            const detailRes = await axiosInstance.get(pokemon.url);
-            const detailData = detailRes.data;
+    // 상세 정보 요청
+    const detailResponses = await Promise.all(pokemonList.map(p => axiosInstance.get(p.url)));
 
-            // 포켓몬 한글 정보
-            const speciesRes = await axiosInstance.get(detailData.species.url);
-            const speciesData = speciesRes.data;
+    //species 정보 요청
+    const speciesResponses = await Promise.all(detailResponses.map(res => axiosInstance.get(res.data.species.url)));
 
-            //포켓몬 한글 명
-            const koreanNameEntry = speciesData.names.find(
-                name => name.language.name === 'ko'
-            );
-            const koreanName = koreanNameEntry ? koreanNameEntry.name : detailData.name;
-            
-            //포켓몬 한글 분류
-            const genusEntry = speciesData.genera.find(
-                genus => genus.language.name === 'ko'
-            );
-            const genusName = genusEntry ? genusEntry.genus : '';
+    const typeCache = {};
 
-            //포켓몬 한글 타입
-            const typesWithUrls = await Promise.all(
-                detailData.types.map(async (typeInfo) => {
-                    const typeRes = await axiosInstance.get(typeInfo.type.url);
-                    const typeData = typeRes.data;
+    // 최종 데이터 구성
+    const allPokemonData = await Promise.all(detailResponses.map(async (detailRes, i) => {
+        const detailData = detailRes.data;
+        const speciesData = speciesResponses[i].data;
 
-                    const koreanTypeEntry = typeData.names.find(
-                        (n) => n.language.name === "ko"
-                    );
-                    const koreanTypeName = koreanTypeEntry
-                        ? koreanTypeEntry.name
-                        : typeInfo.type.name;
+    // 한글 이름
+    const koreanName = speciesData.names.find(n => n.language.name === 'ko')?.name || detailData.name;
 
-                    return {
-                        enType: typeInfo.type.name,
-                        koType: koreanTypeName,
-                        url: typeInfo.type.url,
-                    };
-                })
-            );
+    // 한글 분류
+    const genusName = speciesData.genera.find(g => g.language.name === 'ko')?.genus || '';
 
-            return {
-                id: detailData.id,
+    // 타입 처리 (캐시 사용)
+    const types = await Promise.all(
+        detailData.types.map(async typeInfo => {
+            const enType = typeInfo.type.name;
 
-                name: koreanName, 
-                englishName: detailData.name,
+            // 1️⃣ 캐시에 이미 있으면 그대로 반환
+            if (typeCache[enType]) return typeCache[enType];
 
-                weight: detailData.weight,
-                height: detailData.height,
+            // 2️⃣ 캐시에 없으면 API 호출
+            const typeRes = await axiosInstance.get(typeInfo.type.url);
+            const typeData = typeRes.data;
 
-                genus: genusName, 
+            const koreanTypeName = typeData.names.find(n => n.language.name === "ko")?.name || enType;
 
-                types: typesWithUrls,
-                
-                imageUrl: detailData.sprites.front_default,
-                imgGifFrontUrl: detailData.sprites.versions['generation-v']['black-white'].animated.front_default,
-                imgGifBackUrl: detailData.sprites.versions['generation-v']['black-white'].animated.back_default,
-            };
+            const typeObj = { enType, koType: koreanTypeName };
 
-        } catch (err) {
-            console.error(`포켓몬 데이터 로드 오류 (${pokemon.name}):`, err.message);
-            return null;
-        }
-    });
+            // 3️⃣ 캐시에 저장
+            typeCache[enType] = typeObj;
 
-    const allPokemonData = await Promise.all(pokemonPromises);
+            return typeObj;
+        })
+    );
 
-    return allPokemonData.filter(data => data !== null)
-}
+        return {
+            id: detailData.id,
+            name: koreanName,
+            englishName: detailData.name,
+            weight: detailData.weight,
+            height: detailData.height,
+            genus: genusName,
+            types,
+            imageUrl: detailData.sprites.front_default,
+            imgGifFrontUrl: detailData.sprites.versions['generation-v']['black-white'].animated.front_default,
+            imgGifBackUrl: detailData.sprites.versions['generation-v']['black-white'].animated.back_default,
+        };
+    })
+    );
+        return allPokemonData;
+    }
 
+// 포켓몬 리스트 분류하는 타입 버튼용으로 포켓몬 모든 속성 요청
 async function getPokemonTypes() {
     try {
         const res = await axiosInstance.get('/type');

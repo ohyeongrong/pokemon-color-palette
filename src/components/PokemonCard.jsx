@@ -1,6 +1,5 @@
 import usePokemonStore from '../stores/usePokemonStore.js'
-import { typeColors } from '../constants/typeColors.js'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ColorThief from 'colorthief'
 import PokemonTypeBadge from './PokemonTypeBadge.jsx';
 

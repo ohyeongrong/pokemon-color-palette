@@ -123,7 +123,7 @@ const usePokemonStore = create((set, get)=>({
     },
 
     getColorFromCache : (id) => {
-        return get().colorCache[id] || null;
+        return get().colorCache[id] || [];
     },
 
     selectedPokemon: null, 

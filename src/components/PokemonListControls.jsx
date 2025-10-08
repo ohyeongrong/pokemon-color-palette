@@ -6,6 +6,8 @@ function PokemonListControls () {
 
     const allTypeList = usePokemonStore((state) => state.allTypeList);
 
+    const allPokemonList = usePokemonStore((state) => state.filteredPokemonList);
+
     const filterByType = usePokemonStore((state) => state.filterByType);
     const filterByKeyword = usePokemonStore((state) => state.filterByKeyword);
     
@@ -15,6 +17,8 @@ function PokemonListControls () {
     const filterBySort = usePokemonStore((state) => state.filterBySort);
 
     const formatId = usePokemonStore((state) => state.formatId);
+
+    const openModal = usePokemonStore((state) => state.openModal);
 
     //타입 담아 둘 변수
     const [seletedType, setSeletedType] = useState('all');
@@ -103,10 +107,19 @@ function PokemonListControls () {
     return result ? result.label : '도감번호 순서'
     }
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+    }
+
+    const handleModalOpen = (pokemon) => {
+        const selectedPokemon = allPokemonList.find(p => p.id === pokemon.id)
+        openModal(selectedPokemon)
+    }
+
     return (
         <section className='py-16'>
             <h2 className='sr-only'>포켓몬 검색 및 필터</h2>
-            <form role='search'>
+            <form role='search' onSubmit={ handleSearch }>
                 <div className='flex flex-col md:flex-row'>
                     {/* 포켓몬 타입 라디오 버튼 모바일 스와이퍼 사용해야할듯?*/}
                     <fieldset className='md:flex-1/2 lg:flex-2/5'> 
@@ -190,7 +203,7 @@ function PokemonListControls () {
                                 }
                                 {/* 검색 버튼 */}
                                 <button 
-                                type="button" 
+                                type="submit" 
                                 aria-label="검색 버튼"
                                 onClick={ handlekeywordClick }
                                 >
@@ -212,7 +225,7 @@ function PokemonListControls () {
                             searchSuggestions.length > 0 
                             &&
                             <div className='absolute w-full mt-2 z-50 backdrop-blur-md'>
-                                <ul className='text-sm w-full ' role="listbox">
+                                <ul className='text-sm w-full' role="listbox">
                                 {
                                     searchSuggestions.map((pokemon, i)=>(
                                     <li 
@@ -223,9 +236,11 @@ function PokemonListControls () {
                                         : 'w-full py-2 px-4 border-x border-b border-[var(--navy-color)] bg-[var(--gray-color)]/10 text-[var(--gray-color)]'
                                     }
                                         role="option">
-                                        <button type='button'>
-                                            <div className='flex justify-between items-center'>
-                                                <div className='flex items-center gap-1'>
+                                        <button 
+                                            onClick={ ()=> handleModalOpen(pokemon) }
+                                            type='button' 
+                                            className='w-full flex justify-between items-center'>
+                                            <div className='flex items-center gap-2'>
                                                 <div className='w-6 h-6'>
                                                     <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} />
                                                 </div>
@@ -235,13 +250,11 @@ function PokemonListControls () {
                                                     { keywordHighlight(pokemon.name, keyword) }
                                                     </dd>
                                                 </dl>
-                                                </div>
-                                                <dl>
-                                                    <dt className='sr-only'>도감번호</dt>
-                                                    <dd className='text-xs'>#{keywordHighlight(formatId(pokemon.id), keyword)}</dd>
-                                                </dl>
-                                                
                                             </div>
+                                            <dl>
+                                                <dt className='sr-only'>도감번호</dt>
+                                                <dd className='text-xs'>#{keywordHighlight(formatId(pokemon.id), keyword)}</dd>
+                                            </dl>
                                         </button>
                                     </li>
                                     ))

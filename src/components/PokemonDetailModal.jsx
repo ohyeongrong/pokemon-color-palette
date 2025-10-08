@@ -1,6 +1,7 @@
 import DismissButton from './DismissButton.jsx'
 import usePokemonStore from '../stores/usePokemonStore.js'
 import PokemonTypeBadge from './PokemonTypeBadge.jsx';
+import { useEffect } from 'react';
 
 function PokemonDetailModal() {
 

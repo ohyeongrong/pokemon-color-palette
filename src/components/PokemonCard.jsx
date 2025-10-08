@@ -2,6 +2,7 @@ import usePokemonStore from '../stores/usePokemonStore.js'
 import { useEffect, useState } from 'react'
 import ColorThief from 'colorthief'
 import PokemonTypeBadge from './PokemonTypeBadge.jsx';
+import { usePokemonColor } from '../hooks/usePokemonColor.jsx'
 
 function PokemonCard({ pokemon }) {
 
@@ -11,46 +12,13 @@ function PokemonCard({ pokemon }) {
 
     const isCollected = collectPokemonList.some(p => p.id === pokemon.id)
 
-    const [colors, setColors] = useState([])
-
-    const colorCache = usePokemonStore((state) => state.colorCache);
-    const setColorCache = usePokemonStore((state) => state.setColorCache);
-
     const openModal = usePokemonStore((state) => state.openModal);
 
+    const { colors, fetchColors } = usePokemonColor(pokemon.id, pokemon.imageUrl);
 
-    useEffect(() => {
-    // 캐시에 있으면 바로 사용
-    if (colorCache[pokemon.id]) {
-        setColors(colorCache[pokemon.id])
-        return
-    }
-
-    // 이미지 로드 후 색상 추출
-    const img = new Image()
-    img.crossOrigin = "Anonymous"
-    img.src = pokemon.imageUrl
-
-    img.onload = () => {
-        const colorThief = new ColorThief()
-        try {
-            // 팔레트 3 컬러 추출
-            const palette = colorThief.getPalette(img, 3)
-            const hexColors = palette.map(([r, g, b]) => rgbToHex(r, g, b))
-            setColors(hexColors)
-            setColorCache(pokemon.id, hexColors)
-        } catch (err) {
-            console.error("색 추출 실패:", err)
-        }
-    }
-    }, [pokemon.id])
-
-    // RGB - HEX 변환 함수
-    function rgbToHex(r, g, b) {
-    return `#${[r, g, b]
-        .map(x => x.toString(16).padStart(2, "0"))
-        .join("")}`
-    }
+    useEffect(()=>{
+        fetchColors()
+    },[pokemon.id, pokemon.imageUrl])
 
     const handleCardClick = (pokemon) => {
         openModal(pokemon)

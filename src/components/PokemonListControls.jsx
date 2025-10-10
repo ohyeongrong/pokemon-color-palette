@@ -117,10 +117,10 @@ function PokemonListControls () {
     }
 
     return (
-        <section className='py-16'>
+        <section className='py-8 md:py-16'>
             <h2 className='sr-only'>포켓몬 검색 및 필터</h2>
             <form role='search' onSubmit={ handleSearch }>
-                <div className='flex flex-col md:flex-row'>
+                <div className='flex flex-col gap-6 md:gap-0 md:flex-row'>
                     {/* 포켓몬 타입 라디오 버튼 모바일 스와이퍼 사용해야할듯?*/}
                     <fieldset className='md:flex-1/2 lg:flex-2/5'> 
                         <legend className='sr-only'>포켓몬 타입 선택</legend>
@@ -139,7 +139,7 @@ function PokemonListControls () {
                             <label
                             htmlFor="type-all"
                             className='
-                                px-3 py-2 border border-[var(--navy-color)] rounded-full
+                                px-2.5 md:px-3 py-1.5 md:py-2 border border-[var(--navy-color)] rounded-full
                                 text-[var(--gray-color)] text-sm cursor-pointer
                                 peer-checked:bg-[var(--navy-color)] 
                                 peer-checked:border-transparent 
@@ -164,7 +164,7 @@ function PokemonListControls () {
                                 <label 
                                 htmlFor={`type-${type.enType}`}
                                 className={`
-                                    px-3 py-2 border border-[var(--navy-color)] rounded-full 
+                                    px-2.5 md:px-3 py-1.5 md:py-2 border border-[var(--navy-color)] rounded-full 
                                     text-[var(--gray-color)]  text-sm cursor-pointer
                                     peer-checked:bg-[var(--navy-color)] 
                                     peer-checked:border-transparent

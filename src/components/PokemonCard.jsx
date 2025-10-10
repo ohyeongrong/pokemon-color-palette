@@ -31,19 +31,19 @@ function PokemonCard({ pokemon }) {
 
     return (
         <article onClick={ () => handleCardClick(pokemon)} className='flex flex-wrap cursor-pointer'>
-            <div className='w-58 h-82'>
+            <div className='w-58 h-64 md:h-82'>
                 <div className='w-full h-full relative'>
                     {/* 포켓몬 card 앞면*/}
                     <div
                         className='absolute
                         flex flex-col justify-between 
                         border-1 border-[var(--navy-color)] rounded-2xl 
-                        p-6 w-full h-full backface-hidden'>
+                        p-4 md:p-6  w-full h-full backface-hidden'>
                         {/* 포켓몬 이름 */}
                         <div className='flex justify-between'>
                             <div className='flex flex-col items-start'>
-                                <h3 className='text-2xl font-semibold'>{pokemon.name}</h3>
-                                <span className='text-sm text-[var(--gray-color)]'>{pokemon.englishName}</span>
+                                <h3 className='text-xl md:text-2xl font-semibold'>{pokemon.name}</h3>
+                                <span className='text-xs md:text-sm text-[var(--gray-color)]'>{pokemon.englishName}</span>
                             </div>
                             <dl>
                                 <dt className='sr-only'>도감번호</dt>
@@ -53,7 +53,7 @@ function PokemonCard({ pokemon }) {
                         {/* 포켓몬 이미지 */}
                         <div className='flex flex-col justify-center items-center gap-2 relative'>
                         <img className='absolute object-cover [image-rendering:pixelated]' src={pokemon.imgGifFrontUrl} alt={pokemon.englishName} />
-                        <div className='w-32 h-32 relative'>
+                        <div className='w-30 h-30 md:w-32 md:h-32 relative'>
                             <div className='absolute right-0'>
                             <button 
                                 type="button" 
@@ -85,12 +85,12 @@ function PokemonCard({ pokemon }) {
                         </div>
                         </div>
                         {/* 포켓몬 속성, 타입 */}
-                        <div className='flex justify-between'>
+                        <div className='flex items-center justify-between'>
                         {/* 타입 */}
                         <PokemonTypeBadge pokemon={pokemon}/>
                         <dl>
                             <dt className='sr-only'>분류</dt>
-                            <dd className='text-[13px] text-[var(--gray-color)]'>{pokemon.genus}</dd>
+                            <dd className='text-[11px] md:text-xs text-[var(--gray-color)]'>{pokemon.genus}</dd>
                         </dl>
                         </div>
                     </div>
@@ -99,13 +99,13 @@ function PokemonCard({ pokemon }) {
                         className='absolute
                         flex flex-col justify-between 
                         border-1 border-[var(--navy-color)] bg-[var(--navy-color)]/100 rounded-2xl 
-                        p-6 w-full h-full backface-hidden
+                        p-4 md:p-6 w-full h-full backface-hidden
                         rotate-y-180'>
                         {/* 포켓몬 이름 */}
                         <div className='flex justify-between'>
                             <div className='flex flex-col items-start'>
-                                <h3 className='text-2xl font-semibold'>{pokemon.name}</h3>
-                                <span className='text-sm text-[var(--gray-color)]'>{pokemon.englishName}</span>
+                                <h3 className='text-xl md:text-2xl font-semibold'>{pokemon.name}</h3>
+                                <span className='text-xs md:text-sm text-[var(--gray-color)]'>{pokemon.englishName}</span>
                             </div>
                             <dl>
                                 <dt className='sr-only'>도감번호</dt>

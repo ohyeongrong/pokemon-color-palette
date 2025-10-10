@@ -27,20 +27,20 @@ function PokemonModalContent() {
     }
 
     return (
-        <div className="inset-1/2 -translate-x-1/2 -translate-y-1/2 p-16 w-xl relative bg-[var(--black-color)]/80 border border-[var(--navy-color)] rounded-2xl text-white">
-                    <header className='absolute right-2 top-2'>
+        <div className="inset-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full md:md:h-auto px-4 md:p-16 md:w-xl relative bg-[var(--black-color)]/80 md:border md:border-[var(--navy-color)] md:rounded-2xl text-white">
+                    <header className='absolute right-4 top-4 md:right-2 md:top-2'>
                         <h2 className="sr-only">{selectedPokemon.name} 상세 모달창</h2>
                         <DismissButton label={"모달창 닫기"} closeBtn onClick={ closeModal } height='24px' width='24px'/>
                     </header>
                     <article>
-                        <div className="flex flex-col gap-9">
+                        <div className="flex flex-col gap-9 py-18 md:py-0 px-4 md:px-0">
                             <div className="flex items-center">
-                                <div className="flex-1">
+                                <div className="flex-4/9 md:flex-1">
                                     <div className='w-full h-full flex items-center justify-center'>
                                         <img className="object-contain [image-rendering:pixelated]" src={selectedPokemon.imgGifFrontUrl} alt={selectedPokemon.name} />
                                     </div>
                                 </div>
-                                <div className="flex-1">
+                                <div className="flex-5/9 md:flex-1">
                                     <div className="flex flex-col gap-6">
                                         <div className="flex flex-col gap-2">
                                             <dl>
@@ -72,10 +72,10 @@ function PokemonModalContent() {
                             </div>
                             <div className='border-b border-[var(--navy-color)]'></div>
                             <div>
-                                <ul className='flex justify-between gap-2'>
+                                <ul className='flex flex-col md:flex-row md:justify-between gap-2'>
                                     {
                                         getColorFromCache(selectedPokemon.id).map((color, i) => (
-                                            <li key={color + i} className='flex flex-wrap flex-col justify-between gap-4 p-4 w-37 h-30 rounded-2xl text-xs'
+                                            <li key={color + i} className='flex flex-wrap flex-col justify-between gap-1 p-3 md:gap-4 md:p-4 md:w-37 md:h-30 rounded-2xl text-xs'
                                                 style={{ backgroundColor: color }}>
                                                 <div className='flex'>
                                                     <div className='flex items-center justify-center bg-[var(--black-color)]/40 rounded-lg py-1 px-2'>

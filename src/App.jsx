@@ -22,14 +22,12 @@ function App() {
   const formatId = usePokemonStore((state) => state.formatId);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getPokemonDetails();
-      const typeData = await getPokemonAllTypes();
-      setAllPokemonList(data);
-      setAllTypeList(typeData);
-    }
-    fetchData();
-  }, [setAllPokemonList])
+  const fetchTypes = async () => {
+    const typeData = await getPokemonAllTypes();
+    setAllTypeList(typeData);
+  };
+    fetchTypes();
+}, []);
   
 
   //콜렉트 토글

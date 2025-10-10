@@ -10,6 +10,17 @@ const usePokemonStore = create((set, get)=>({
     
     setAllPokemonList : (list) => set({ allPokemonList : list, filteredPokemonList: list }),
 
+    appendPokemonList: (newList) => set(state => ({
+        allPokemonList: [
+            ...state.allPokemonList,
+            ...newList.filter(n => !state.allPokemonList.some(p => p.id === n.id))
+        ],
+        filteredPokemonList: [
+            ...state.filteredPokemonList,
+            ...newList.filter(n => !state.filteredPokemonList.some(p => p.id === n.id))
+        ]
+    })),
+
     allTypeList : [], // api에서 받은 모든 속성
 
     setAllTypeList : (list) => {

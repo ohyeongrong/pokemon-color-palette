@@ -29,9 +29,14 @@ const usePokemonStore = create((set, get)=>({
         set({ allTypeList: filteredType })
     },
 
+    selectedType : 'all', // 현재 선택된 타입 ('all'이면 전체 보기)
+
+    setSelectedType : (type) => set({ selectedType: type }),
+
     // 타입버튼 별 리스트 변경
     filterByType : (type) => {
         set((state) => ({
+            selectedType: type,
             filteredPokemonList: 
                 type !== 'all'
                     ? state.allPokemonList.filter(list => 

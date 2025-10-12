@@ -8,6 +8,9 @@ function PokemonListControls () {
 
     const allPokemonList = usePokemonStore((state) => state.filteredPokemonList);
 
+    const selectedType = usePokemonStore((state) => state.selectedType);
+    const setSelectedType = usePokemonStore((state) => state.setSelectedType);
+
     const filterByType = usePokemonStore((state) => state.filterByType);
     const filterByKeyword = usePokemonStore((state) => state.filterByKeyword);
     
@@ -19,9 +22,6 @@ function PokemonListControls () {
     const formatId = usePokemonStore((state) => state.formatId);
 
     const openModal = usePokemonStore((state) => state.openModal);
-
-    //타입 담아 둘 변수
-    const [seletedType, setSeletedType] = useState('all');
 
     //검색창 키워드 담아 둘 변수
     const [keyword, setKeyword] = useState('');
@@ -44,7 +44,7 @@ function PokemonListControls () {
     const handleTypeChange = (e) => {
         const value = e.target.value
         filterByType(value)
-        setSeletedType(value)
+        setSelectedType(value)
         setSortOptValue('id-asc')
     }
 
@@ -67,7 +67,7 @@ function PokemonListControls () {
         setKeyword('')
         getSearchSuggestions('')
         setSortOptValue('id-asc')
-        setSeletedType('')
+        setSelectedType('')
     }
 
     //검색창 자동완성 부분 키워드 강조하기
@@ -132,7 +132,7 @@ function PokemonListControls () {
                             type="radio" 
                             name="type" 
                             value="all"
-                            checked={ seletedType === 'all' } 
+                            checked={ selectedType === 'all' } 
                             className='appearance-none peer'
                             onChange={ handleTypeChange }
                             />
@@ -157,7 +157,7 @@ function PokemonListControls () {
                                 type="radio" 
                                 name="type" 
                                 value={type.enType}
-                                checked={ seletedType === type.enType } 
+                                checked={ selectedType === type.enType } 
                                 className='appearance-none peer'
                                 onChange={ handleTypeChange }
                                 />
@@ -186,7 +186,7 @@ function PokemonListControls () {
                             <div className='text-sm w-full border border-[var(--navy-color)] rounded-full flex justify-between px-4 py-2'>
                             <input 
                                 className='w-full placeholder:text-[var(--gray-color)]/50 
-                                caret-[var(--gray-color)] focus:outline-none' 
+                                caret-[var(--gray-color)] focus:outline-none appearance-none' 
                                 type="search" 
                                 name="search"
                                 value={keyword}

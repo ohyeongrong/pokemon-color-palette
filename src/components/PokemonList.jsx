@@ -9,6 +9,9 @@ function PokemonList() {
     const allPokemonList = usePokemonStore((state) => state.allPokemonList);
     const setAllPokemonList = usePokemonStore((state) => state.setAllPokemonList);
 
+
+    const selectedType = usePokemonStore((state) => state.selectedType);
+
     const filteredPokemonList = usePokemonStore((state) => state.filteredPokemonList);
 
     // 무한 스크롤
@@ -33,7 +36,9 @@ function PokemonList() {
     useEffect(() => {
         const observer = new IntersectionObserver ( entries => {
             if(entries[0].isIntersecting && !loading && hasMore){
-                loadMore();
+                if (selectedType === 'all') {
+                    loadMore();
+                }
             }
         } ,{ threshold: 1}
         );
@@ -41,7 +46,7 @@ function PokemonList() {
         if(loaderRef.current) observer.observe(loaderRef.current);
 
         return () => observer.disconnect();
-    },[loadMore, loading, hasMore]);
+    },[loadMore, loading, hasMore, selectedType]);
 
 
 
@@ -51,7 +56,7 @@ function PokemonList() {
         <section>
             {console.log(filteredPokemonList)}
             <h2 className='sr-only'>포켓몬 목록</h2>
-            <div className='flex flex-col items-center gap-18'>
+            <div className='flex flex-col items-center gap-18 relative'>
                 <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-2 gap-y-2 sm:gap-y-10'
                     >
                     { 

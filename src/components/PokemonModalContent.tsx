@@ -1,23 +1,30 @@
-import DismissButton from './DismissButton.jsx'
+import DismissButton from './DismissButton.js'
 import usePokemonStore from '../stores/usePokemonStore.js'
-import PokemonTypeBadge from './PokemonTypeBadge.jsx';
+import PokemonTypeBadge from './PokemonTypeBadge.js';
 import { useEffect } from 'react'
-import { usePokemonColor } from '../hooks/usePokemonColor.jsx'
+import { usePokemonColor } from '../hooks/usePokemonColor.js'
+import type { AllPokemonData } from '../types/types.js';
 
-function PokemonModalContent() {
+interface PokemonModalContent {
+    selectedPokemon : AllPokemonData;
+}
 
-    const selectedPokemon = usePokemonStore((state) => state.selectedPokemon);
+function PokemonModalContent({ selectedPokemon }: PokemonModalContent) {
+
     const closeModal = usePokemonStore((state) => state.closeModal);
     const formatId = usePokemonStore((state) => state.formatId);
     const getColorFromCache = usePokemonStore((state) => state.getColorFromCache);
 
-    const { colors, fetchColors } = usePokemonColor(selectedPokemon.id, selectedPokemon.imageUrl);
+    const { colors, fetchColors } = usePokemonColor(
+        selectedPokemon.id, 
+        selectedPokemon.imageUrl
+    );
 
     useEffect(() => {
         fetchColors();
     }, [selectedPokemon.id, selectedPokemon.imageUrl]);
 
-    function handleColorCopy(txt) {
+    function handleColorCopy(txt: string) {
         navigator.clipboard.writeText(txt).then(()=>{
             alert('복사 성공')
         })
@@ -30,7 +37,13 @@ function PokemonModalContent() {
         <div className="inset-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full md:md:h-auto px-4 md:p-16 md:w-xl relative bg-[var(--black-color)]/80 md:border md:border-[var(--navy-color)] md:rounded-2xl text-white">
                     <header className='absolute right-4 top-4 md:right-2 md:top-2'>
                         <h2 className="sr-only">{selectedPokemon.name} 상세 모달창</h2>
-                        <DismissButton label={"모달창 닫기"} closeBtn onClick={ closeModal } height='24px' width='24px'/>
+                        <DismissButton 
+                            label={"모달창 닫기"} 
+                            closeBtn 
+                            onClick={() => {
+                                if (selectedPokemon) closeModal()
+                            }} 
+                            height='24px' width='24px'/>
                     </header>
                     <article>
                         <div className="flex flex-col gap-9 py-18 md:py-0 px-4 md:px-0">

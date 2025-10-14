@@ -1,25 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import './App.css'
-import { getPokemonDetails, getPokemonAllTypes } from './api/pokemonApi.js'
+import { getPokemonAllTypes } from './api/pokemonApi.js'
 import usePokemonStore from './stores/usePokemonStore.js'
-import PokemonDetailModal from './components/PokemonDetailModal.jsx'
-import DismissButton from './components/DismissButton.jsx'
-import PokemonList from './components/PokemonList.jsx'
-import PokemonListControls from './components/PokemonListControls.jsx'
-import FloatingAside from './components/FloatingAside.jsx'
+import PokemonDetailModal from './components/PokemonDetailModal.js'
+import PokemonList from './components/PokemonList.js'
+import PokemonListControls from './components/PokemonListControls.js'
+import FloatingAside from './components/FloatingAside.js'
 
 function App() {
 
-  const allPokemonList = usePokemonStore((state) => state.allPokemonList);
-  const setAllPokemonList = usePokemonStore((state) => state.setAllPokemonList);
-
-  const allTypeList = usePokemonStore((state) => state.allTypeList);
   const setAllTypeList = usePokemonStore((state) => state.setAllTypeList);
-
-  const collectPokemonList = usePokemonStore((state) => state.collectPokemonList);
-  const toggleCollect = usePokemonStore((state) => state.toggleCollect);
-
-  const formatId = usePokemonStore((state) => state.formatId);
 
   useEffect(() => {
   const fetchTypes = async () => {
@@ -29,14 +19,6 @@ function App() {
     fetchTypes();
 }, []);
   
-
-  //콜렉트 토글
-  const [showCollect, setShowCollect] = useState(false);
-
-
-//aside 콜렉션 이미지 띄우기
-const lastPokemon = collectPokemonList.at(-1);
-
   return (
     <>
       <PokemonDetailModal/>

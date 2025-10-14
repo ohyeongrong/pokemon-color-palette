@@ -1,10 +1,14 @@
 import usePokemonStore from '../stores/usePokemonStore.js'
-import { useEffect, useState } from 'react'
-import ColorThief from 'colorthief'
-import PokemonTypeBadge from './PokemonTypeBadge.jsx';
-import { usePokemonColor } from '../hooks/usePokemonColor.jsx'
+import { useEffect } from 'react'
+import PokemonTypeBadge from './PokemonTypeBadge.js';
+import { usePokemonColor } from '../hooks/usePokemonColor.js'
+import type { AllPokemonData } from '../types/types.js';
 
-function PokemonCard({ pokemon }) {
+interface PokemonCard {
+    pokemon: AllPokemonData
+}
+
+function PokemonCard ({ pokemon }: PokemonCard )  {
 
     const formatId = usePokemonStore((state) => state.formatId);
     const toggleCollect = usePokemonStore((state) => state.toggleCollect);
@@ -20,11 +24,11 @@ function PokemonCard({ pokemon }) {
         fetchColors()
     },[pokemon.id, pokemon.imageUrl])
 
-    const handleCardClick = (pokemon) => {
+    const handleCardClick = (pokemon: AllPokemonData) => {
         openModal(pokemon)
     }
 
-    const handleAddCollectClick = (e) => {
+    const handleAddCollectClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         toggleCollect(pokemon);
     }

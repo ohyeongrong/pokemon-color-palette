@@ -1,6 +1,7 @@
 import usePokemonStore from '../stores/usePokemonStore.js'
-import DismissButton from './DismissButton.jsx'
-import { useState } from 'react'
+import DismissButton from './DismissButton.js'
+import React, { useState } from 'react'
+import type { AllPokemonData, SortOption } from '../types/types'
 
 function PokemonListControls () {
 
@@ -41,7 +42,7 @@ function PokemonListControls () {
     ];
 
     //타입버튼 별 리스트 보이는 함수
-    const handleTypeChange = (e) => {
+    const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         filterByType(value)
         setSelectedType(value)
@@ -49,7 +50,7 @@ function PokemonListControls () {
     }
 
     //검색창 함수
-    const handleKeywordChange = (e) => {
+    const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
         setKeyword(value)
         getSearchSuggestions(value)
@@ -71,7 +72,7 @@ function PokemonListControls () {
     }
 
     //검색창 자동완성 부분 키워드 강조하기
-    function keywordHighlight(value, keyword) {
+    function keywordHighlight(value:string, keyword: string) {
 
         const index = value.toString().indexOf(keyword);
 
@@ -93,10 +94,10 @@ function PokemonListControls () {
     }
 
     // 정렬 옵션 순 변경
-    const handleOptChange = (e) => {
-    const value = e.currentTarget.dataset.value
-    filterBySort(value)
-    setSortOptValue(value)
+    const handleOptChange = (e: React.MouseEvent<HTMLElement>) => {
+    const value = e.currentTarget.dataset.value;
+    filterBySort(value as SortOption)
+    setSortOptValue(value ?? '')
     setShowSortOpts(false)
     }
 
@@ -107,12 +108,13 @@ function PokemonListControls () {
     return result ? result.label : '도감번호 순서'
     }
 
-    const handleSearch = (e) => {
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
     }
 
-    const handleModalOpen = (pokemon) => {
+    const handleModalOpen = (pokemon: AllPokemonData) => {
         const selectedPokemon = allPokemonList.find(p => p.id === pokemon.id)
+        if(!selectedPokemon) return;
         openModal(selectedPokemon)
     }
 

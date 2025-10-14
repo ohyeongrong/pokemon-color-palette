@@ -2,12 +2,13 @@ import usePokemonStore from '../stores/usePokemonStore.js'
 import { useCallback, useState } from 'react'
 import ColorThief from 'colorthief'
 
-export function usePokemonColor(pokemonId, imageUrl) {
-    const [colors, setColors] = useState([]);
+export function usePokemonColor(pokemonId: number, imageUrl: string) {
+    const [colors, setColors] = useState<string[]>([]);
     const colorCache = usePokemonStore((state) => state.colorCache);
     const setColorCache = usePokemonStore((state) => state.setColorCache);
 
     const fetchColors = useCallback(() => {
+        if (!pokemonId || !imageUrl) return;
         if (colorCache[pokemonId]) {
             setColors(colorCache[pokemonId])
             return
@@ -20,7 +21,7 @@ export function usePokemonColor(pokemonId, imageUrl) {
     img.onload = () => {
         const colorThief = new ColorThief()
         try {
-            const palette = colorThief.getPalette(img, 3)
+            const palette: [number, number, number][] = colorThief.getPalette(img, 3)
             const hexColors = palette.map(([r, g, b]) => rgbToHex(r, g, b))
             setColors(hexColors)
             setColorCache(pokemonId, hexColors)
@@ -35,8 +36,8 @@ export function usePokemonColor(pokemonId, imageUrl) {
 
 
 // RGB - HEX 변환 함수
-function rgbToHex(r, g, b) {
-return `#${[r, g, b]
-    .map(x => x.toString(16).padStart(2, "0"))
-    .join("")}`
+function rgbToHex(r:number, g:number, b:number): string {
+    return `#${[r, g, b]
+        .map(x => x.toString(16).padStart(2, "0"))
+        .join("")}`
 }

@@ -1,8 +1,35 @@
 import { create } from 'zustand'
+import type { AllPokemonData, AllPokemonTypes, SearchSuggestions, ColorCache, SortOption } from '../types/types'
 
-const usePokemonStore = create((set, get)=>({
+interface PokemonStore {
+    allPokemonList: AllPokemonData[];
+    filteredPokemonList: AllPokemonData[];
+    searchSuggestions: AllPokemonData[];
+    setAllPokemonList : (list: AllPokemonData[]) => void;
+    allTypeList: AllPokemonTypes[];
+    collectPokemonList : AllPokemonData[];
+    appendPokemonList: (newList: AllPokemonData[]) => void;
+    setAllTypeList : (list: AllPokemonTypes[]) => void;
+    selectedType: string
+    setSelectedType : (type: string) => void;
+    filterByType : (type: string) => void;
+    filterByKeyword : (keyword: string) => void;
+    getSearchSuggestions : (keyword: string) => void;
+    filterBySort : (opt: SortOption) => void;
+    toggleCollect : (addList: AllPokemonData) => void;
+    formatId : (id: number) => string;
+    colorCache : ColorCache;
+    setColorCache: (id: number, color: string[]) => void;
+    getColorFromCache : (id: number) => string[];
+    selectedPokemon: AllPokemonData | null;
+    openModal : (pokemonData: AllPokemonData) => void;
+    closeModal: () => void;
+}
 
-    allPokemonList : [], // api에서 받은 모든 포켓몬 리스트
+
+const usePokemonStore = create<PokemonStore>((set, get)=>({
+
+    allPokemonList: [], // api에서 받은 모든 포켓몬 리스트
 
     filteredPokemonList: [], // 실제 사용 리스트
 
@@ -83,13 +110,13 @@ const usePokemonStore = create((set, get)=>({
     },
 
     filterBySort : (opt) => {
-        const sortOpts = {
+        const sortOpts: Record<SortOption, (a: AllPokemonData, b:AllPokemonData) => number> = {
             'id-asc':  (a, b) => a.id - b.id,
             'id-desc': (a, b) => b.id - a.id,
-            'weight-asc': (a, b) => a.weight - b.weight,
-            'weight-desc': (a, b) => b.weight - a.weight,
-            'height-asc': (a, b) => a.height - b.height,
-            'height-desc': (a, b) => b.height - a.height,
+            'weight-asc': (a, b) => Number(a.weight) - Number(b.weight),
+            'weight-desc': (a, b) => Number(b.weight) - Number(a.weight),
+            'height-asc': (a, b) => Number(a.height) - Number(b.height),
+            'height-desc': (a, b) => Number(b.height) - Number(a.height),
         }
 
         const sortOpt = sortOpts[opt]
@@ -117,7 +144,7 @@ const usePokemonStore = create((set, get)=>({
         }  
         if(state.collectPokemonList.length >= maxCollectCount) {
             alert('컬렉션 추가는 최대 3개까지 가능합니다')
-            return state;
+            return {};
         }
         return {
             collectPokemonList: [...state.collectPokemonList, addList]
@@ -130,7 +157,7 @@ const usePokemonStore = create((set, get)=>({
     },
 
     //컬러 추출 리스트
-    colorCache : {},
+    colorCache : {} as ColorCache,
     
     setColorCache: (id, color) => {
         set(state => ({
@@ -146,7 +173,7 @@ const usePokemonStore = create((set, get)=>({
 
     openModal : (pokemonData) => set({selectedPokemon : pokemonData}),
 
-    closeModal: () => set({ selectedPokemon: null }),
+    closeModal : () => set({ selectedPokemon: null }),
     
 }));
 

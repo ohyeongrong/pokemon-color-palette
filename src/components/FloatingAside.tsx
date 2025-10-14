@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import usePokemonStore from '../stores/usePokemonStore.js'
-import DismissButton from './DismissButton.jsx'
+import DismissButton from './DismissButton.js'
+import type { AllPokemonData } from '../types/types.js';
 
 function FloatingAside() {
 
@@ -19,7 +20,7 @@ function FloatingAside() {
     //aside 콜렉션 이미지 띄우기
     const lastPokemon = collectPokemonList.at(-1);
 
-    const handleRemove = (e, pokemon) => {
+    const handleRemove = (e: React.MouseEvent<HTMLButtonElement>, pokemon: AllPokemonData) => {
         e.stopPropagation();
         toggleCollect(pokemon);
         if(collectPokemonList.length <= 1){
@@ -102,7 +103,7 @@ function FloatingAside() {
                                                             }
                                                         </div>
                                                     </div>
-                                                    <DismissButton removeBtn onClick={(e)=>handleRemove(e,pokemon)} fillcolor='var(--gray-color)'/>
+                                                    <DismissButton removeBtn onClick={(e) => handleRemove(e,pokemon)} fillcolor='var(--gray-color)'/>
                                                 </div>
                                             </div>
                                             </li>

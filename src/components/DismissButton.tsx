@@ -1,4 +1,14 @@
-function DismissButton({label, onClick, closeBtn, removeBtn, height="16px", width="16px", fillcolor="#1D283A"}) {
+interface DismissButton {
+    label?: string;
+    onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    closeBtn?: boolean;
+    removeBtn?: boolean;
+    height?: string;
+    width?: string;
+    fillcolor?: string;
+}
+
+function DismissButton({label, onClick, closeBtn, removeBtn, height="16px", width="16px", fillcolor="#1D283A"}: DismissButton) {
     return (
         <button 
             type="button" 

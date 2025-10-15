@@ -4,6 +4,7 @@ import PokemonTypeBadge from './PokemonTypeBadge.js';
 import { useEffect } from 'react'
 import { usePokemonColor } from '../hooks/usePokemonColor.js'
 import type { AllPokemonData } from '../types/types.js';
+import AddCollectBtn from '../components/AddCollectBtn.js'
 
 interface PokemonModalContent {
     selectedPokemon : AllPokemonData;
@@ -14,6 +15,8 @@ function PokemonModalContent({ selectedPokemon }: PokemonModalContent) {
     const closeModal = usePokemonStore((state) => state.closeModal);
     const formatId = usePokemonStore((state) => state.formatId);
     const getColorFromCache = usePokemonStore((state) => state.getColorFromCache);
+
+    const formatMetricValue = usePokemonStore((state) => state.formatMetricValue);
 
     const { colors, fetchColors } = usePokemonColor(
         selectedPokemon.id, 
@@ -47,8 +50,11 @@ function PokemonModalContent({ selectedPokemon }: PokemonModalContent) {
                     </header>
                     <article>
                         <div className="flex flex-col gap-9 py-18 md:py-0 px-4 md:px-0">
-                            <div className="flex items-center">
-                                <div className="flex-4/9 md:flex-1">
+                            <div className="flex items-center relative">
+                                <div className="flex-4/9 md:flex-1 ">
+                                    <div className='absolute top-1 left-1'>
+                                        <AddCollectBtn pokemon={selectedPokemon} height='20px' width='20px'/>
+                                    </div>
                                     <div className='w-full h-full flex items-center justify-center'>
                                         <img className="object-contain [image-rendering:pixelated]" src={selectedPokemon.imgGifFrontUrl} alt={selectedPokemon.name} />
                                     </div>
@@ -75,9 +81,9 @@ function PokemonModalContent({ selectedPokemon }: PokemonModalContent) {
                                             </dl>
                                             <dl className="flex gap-2">
                                                 <dt>키</dt>
-                                                <dd className="text-[var(--gray-color)]" >{ selectedPokemon.height }m</dd>
+                                                <dd className="text-[var(--gray-color)]" >{ formatMetricValue(selectedPokemon.height) }m</dd>
                                                 <dt>몸무게</dt>
-                                                <dd className="text-[var(--gray-color)]">{ selectedPokemon.weight }kg</dd>
+                                                <dd className="text-[var(--gray-color)]">{ formatMetricValue(selectedPokemon.weight) }kg</dd>
                                             </dl>
                                         </div>
                                     </div>
@@ -105,7 +111,7 @@ function PokemonModalContent({ selectedPokemon }: PokemonModalContent) {
                                                 <div className='flex justify-between items-end'>
                                                     <span>{ color }</span>
                                                     <button 
-                                                        className='bg-[var(--black-color)]/40 rounded-full p-2' 
+                                                        className='bg-[var(--black-color)]/40 rounded-full p-2 hover:bg-[var(--gray-color)]/40 transition-colors duration-600 ease-in-out' 
                                                         type="button"
                                                         onClick={ () => handleColorCopy(color) }
                                                         >

@@ -24,6 +24,9 @@ interface PokemonStore {
     selectedPokemon: AllPokemonData | null;
     openModal : (pokemonData: AllPokemonData) => void;
     closeModal: () => void;
+    sortOptValue : string
+    setSortOptValue : (value: string) => void;
+    formatMetricValue : (value: string) => string
 }
 
 
@@ -110,7 +113,7 @@ const usePokemonStore = create<PokemonStore>((set, get)=>({
     },
 
     filterBySort : (opt) => {
-        const sortOpts: Record<SortOption, (a: AllPokemonData, b:AllPokemonData) => number> = {
+        const sortOpts: Record<SortOption, (a: AllPokemonData, b: AllPokemonData) => number> = {
             'id-asc':  (a, b) => a.id - b.id,
             'id-desc': (a, b) => b.id - a.id,
             'weight-asc': (a, b) => Number(a.weight) - Number(b.weight),
@@ -169,12 +172,36 @@ const usePokemonStore = create<PokemonStore>((set, get)=>({
         return get().colorCache[id] || [];
     },
 
+    // 모달창
+
     selectedPokemon: null, 
 
     openModal : (pokemonData) => set({selectedPokemon : pokemonData}),
 
     closeModal : () => set({ selectedPokemon: null }),
-    
+
+
+    sortOptValue : 'id-asc', // 현재 선택된 정렬 값 (기본: 도감번호 순서)
+
+    setSortOptValue : (value) => set({ sortOptValue: value }),
+
+    // 포켓몬 몸무게, 키 변환
+    formatMetricValue : (value) => {
+        const metricValue = value / 10;
+
+        let formattedNum;
+
+        const fixedValue = metricValue.toFixed(1);
+
+        if(fixedValue.endsWith('.0')) {
+            formattedNum = Math.floor(metricValue).toLocaleString('ko-KR');
+        } else {
+            formattedNum = parseFloat(fixedValue).
+            toLocaleString('ko-KR', { minimumFractionDigits: 1,maximumFractionDigits: 1 });
+        }
+        return formattedNum;
+    },
+
 }));
 
 

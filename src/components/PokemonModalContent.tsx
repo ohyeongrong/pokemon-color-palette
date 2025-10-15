@@ -1,16 +1,20 @@
 import DismissButton from './DismissButton.js'
 import usePokemonStore from '../stores/usePokemonStore.js'
 import PokemonTypeBadge from './PokemonTypeBadge.js';
-import { useEffect } from 'react'
+import type { ForwardedRef } from 'react'; 
+import { useRef, useEffect } from 'react';
 import { usePokemonColor } from '../hooks/usePokemonColor.js'
 import type { AllPokemonData } from '../types/types.js';
 import AddCollectBtn from '../components/AddCollectBtn.js'
+import gsap from 'gsap';
 
 interface PokemonModalContent {
     selectedPokemon : AllPokemonData;
+    contentRef: ForwardedRef<HTMLDivElement>; 
+    handleCloseWithAnimation: () => void;
 }
 
-function PokemonModalContent({ selectedPokemon }: PokemonModalContent) {
+function PokemonModalContent({ selectedPokemon, contentRef, handleCloseWithAnimation }: PokemonModalContent) {
 
     const closeModal = usePokemonStore((state) => state.closeModal);
     const formatId = usePokemonStore((state) => state.formatId);
@@ -25,8 +29,30 @@ function PokemonModalContent({ selectedPokemon }: PokemonModalContent) {
 
     useEffect(() => {
         fetchColors();
-    }, [selectedPokemon.id, selectedPokemon.imageUrl]);
 
+        if (contentRef) {
+            const refObject = contentRef as React.RefObject<HTMLDivElement>; 
+
+            if (refObject.current) {
+                gsap.fromTo(
+                    refObject.current, 
+                    { 
+                        scale: 0.2,
+                        opacity: 0,
+                    },
+                    {
+                        duration: 0.6,
+                        scale: 1,
+                        opacity: 1,
+                        ease: "back.out(1.7)",
+                    }
+                );
+            }
+        }
+    }, [selectedPokemon.id, selectedPokemon.imageUrl, fetchColors, contentRef]);
+
+    
+    // 컬러 복사
     function handleColorCopy(txt: string) {
         navigator.clipboard.writeText(txt).then(()=>{
             alert('복사 성공')
@@ -37,15 +63,19 @@ function PokemonModalContent({ selectedPokemon }: PokemonModalContent) {
     }
 
     return (
-        <div className="inset-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full md:md:h-auto px-4 md:p-16 md:w-xl relative bg-[var(--black-color)]/80 md:border md:border-[var(--navy-color)] md:rounded-2xl text-white">
+        <div className="inset-1/2 -translate-x-1/2 -translate-y-1/2 
+            w-full h-full md:md:h-auto px-4 md:p-16 md:w-xl 
+            relative text-white
+            bg-[var(--black-color)]/80 md:border md:border-[var(--navy-color)] md:rounded-2xl"
+            onClick={e => e.stopPropagation()}
+            ref={contentRef}
+            >
                     <header className='absolute right-4 top-4 md:right-2 md:top-2'>
                         <h2 className="sr-only">{selectedPokemon.name} 상세 모달창</h2>
                         <DismissButton 
                             label={"모달창 닫기"} 
                             closeBtn 
-                            onClick={() => {
-                                if (selectedPokemon) closeModal()
-                            }} 
+                            onClick={() => { handleCloseWithAnimation() }} 
                             height='24px' width='24px'/>
                     </header>
                     <article>

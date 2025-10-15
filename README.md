@@ -1,13 +1,101 @@
-# React + Vite
+# 🎨 Pokemon Color Palette
+포켓몬 API를 활용한 포켓몬 컬러 팔레트 도감 프로젝트입니다.
+각 포켓몬의 대표 컬러 3가지를 추출하고, 
+(라이브러리 사용 colorCh?? 무슨 라이브러리였지??)
+색상코드(HEX) 정보(복사도 가능)
+API활용과 ? 상태관리, 라우팅, UI, 애니메이션 구현 경험을 쌓았습니다.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🔗배포 링크
+[#](#)
 
-Currently, two official plugins are available:
+## 📂 GitHub 레포지토리
+[#](#)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 프로젝트 소개
+- **개발 기간**: 2025.10.01 ~ 2025.10.16
+- **기술 스택**:  
+  - **Frontend**: React, JavaScript (ES6+), TypeScript, Zustand
+  - **API 통신**: Axios (PokeAPI)
+  - **Library**: color-thief, GSAP
+  - **Styling**: HTML5, Tailwind CSS
+  - **Design Tool**: Figma
+  - **기타**: Vite, Git, GitHub
+- **기여도**: 100% (기획, 디자인, 개발 직접 진행)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# pokemon-color-palette
+## ⚙️ 주요 기능 및 구현 내용
+
+### 1. 포켓몬 목록 및 기본 정보 표시
+
+* 포켓몬 API를 이용해 데이터 목록을 가져오고, 컴포넌트 기반 설계, 비동기 처리 및 동적인 기능 구현
+* **무한 스크롤(Infinite Scroll)** 구현하여 ?? 장점이 뭘까나?? 
+렌더 느린것도 개선했다요..? 그건 뭐라고 해야하나요.. 그 직렬 방식에서 병렬 방식으로 바꿨는데????
+그리고 반응형에 대응해서 목록도 갯수 조정해서 불러왔음.! 그 과정에서 너무 느려서 디바운싱 적용했는뎅...
+* (퍼블리셔 관점에서: 카드 컴포넌트의 **반응형 그리드 레이아웃** 설계, 마우스 오버 시 카드 플립 애니메이션? 맞누? 그거 넣어서 인터렉티브함? 맞나 그거 줬다요..? 그거 주면 뭐가 좋지?)
+* (디자이너 관점에서: 카드에 각 포켓몬의 정보와 컬러(작게 동그라미? 이거 명칭 뭐임? 컬러칩? 하이튼 작게 함)이거 까지해서 적당한 여백으로 정보를 빡빡하게 받아 들이지 않게 디자인하김 함 디자인)
+
+
+### 2. 컬러 팔레트 추출 및 표시
+
+* (이 프로젝트의 핵심) 포켓몬 이미지에서 **대표 색상 (Primary Color)**과 **보조 색상(Secondary)**, Accent 컬러까지 총 3가지 추출함.
+* 추출된 RGB컬러를 HEX로 변환하여 **HEX 코드**를 표시했으며, 복사 하여 사용할 수 있게 함.
+* (퍼플리셔 관점: 이건 뭐가있을까나..?)
+* (디자이너 관점: 이건 뭐가있을까나..?)
+
+### 3. 필터링 및 검색, 정렬 기능
+
+* **타입(Type)**별 필터링 기능 구현.
+* 이름과 도감번호로 **실시간 검색** 기능 구현. (그 검색자동완성? 그것도 만들었는데 이거는 디자이너 관점이려나?? 사용자 경험 고려이려나??) 
+* 도감 번호, 무게, 키 순으로 **정렬** 기능 구현
+* (퍼블리셔 관점에서: 필터 버튼 및 검색 UI의 **사용자 경험(UX)** 고려 요소) - 근데 이거 거의 디자이너 관점 이기도 한거 아닌가?????
+* (디자이너 관점에서: 필터 버튼 및 검색 UI의 **사용자 경험(UX)** 고려 요소)
+
+### 4. 상세 정보 모달 / 페이지
+
+* 특정 포켓몬 클릭 시 상세 정보 모달(Modal)로 이동이 가능하며, 추출한 컬러 복사 가능!
+* (퍼블리셔 관점에서: **모달의 웹 접근성** 처리, **애니메이션** 적용)
+
+---
+
+## 🚀 설치 및 실행 방법
+
+```bash
+# 1. 프로젝트 클론
+git clone [https://github.com/ohyeongrong/swim-shopping-mall]
+
+# 2. 패키지 설치
+npm install
+
+# 3. 로컬 실행
+npm run dev
+
+```
+
+## 📂 폴더 구조
+
+```
+src/components/common  # 공통 UI 컴포넌트 (Header, Footer, 버튼 등)
+src/components/[페이지명] # 해당 페이지 전용 컴포넌트
+src/pages       # 페이지 단위 컴포넌트 (라우트 단위)
+src/store       # 전역 상태 관리 (Zustand)
+src/hooks       # 커스텀 훅
+src/data        # 목업 데이터, 라우트 메타, 홈 배너용 임시 데이터
+public/data       # 제품 데이터(JSON)
+
+```
+
+---
+
+## 어려웠던 점과 해결 방법
+- 컴포넌트 재사용 → 공통 UI를 분리하고 역할 기반 폴더 구성
+- 전역 상태 공유 → Zustand로 장바구니, 유저정보 등 상태 관리
+- 이미지 슬라이더 구현 → Swiper 모듈로 썸네일 연동
+- 페이지 전환 시 스크롤 유지 → useEffect + useLocation 활용
+- Git 브랜치 충돌 해결 → stash/commit으로 충돌 관리 경험
+
+## 아쉬운 점 및 개선 아이디어
+- PC 레이아웃 일부 정렬/크기 문제
+- 로그인 및 장바구니 및 문의글, 리뷰글 데이터는 Zustand 전역 상태에만 저장되어 새로고침 시 초기화됨  
+  → LocalStorage 또는 서버 API 연동으로 지속화 예정
+- Next.js & TypeScript로 리팩토링 예정

@@ -94,7 +94,7 @@ function PokemonCard ({ pokemon }: PokemonCard )  {
                         </div>
                         {/* 포켓몬 이미지 */}
                         <div className='flex flex-col justify-center items-center gap-2 relative'>
-                            <img className='absolute object-cover [image-rendering:pixelated]' src={pokemon.imgGifFrontUrl} alt={pokemon.englishName} />
+                            <img className='absolute object-cover [image-rendering:pixelated]' src={pokemon.imgGifFrontUrl} alt={pokemon.englishName} loading="lazy" />
                             <div className='w-30 h-30 md:w-32 md:h-32 relative'>
                                 <div className='absolute right-0'>
                                     <AddCollectBtn pokemon={pokemon}/>
@@ -145,7 +145,7 @@ function PokemonCard ({ pokemon }: PokemonCard )  {
                         </div>
                         {/* 포켓몬 이미지 */}
                         <div className='flex flex-col justify-center items-center gap-2 relative'>
-                            <img className='absolute object-cover [image-rendering:pixelated]' src={pokemon.imgGifBackUrl} alt={pokemon.englishName} />
+                            <img className='absolute object-cover [image-rendering:pixelated]' src={pokemon.imgGifBackUrl} alt={pokemon.englishName} loading="lazy"/>
                             <div className='w-30 h-30 md:w-32 md:h-32 relative'>
                                 <div className='absolute right-0'>
                                     <AddCollectBtn pokemon={pokemon}/>

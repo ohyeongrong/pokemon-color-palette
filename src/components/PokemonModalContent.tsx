@@ -86,7 +86,7 @@ function PokemonModalContent({ selectedPokemon, contentRef, handleCloseWithAnima
                                         <AddCollectBtn pokemon={selectedPokemon} height='20px' width='20px'/>
                                     </div>
                                     <div className='w-full h-full flex items-center justify-center'>
-                                        <img className="object-contain [image-rendering:pixelated]" src={selectedPokemon.imgGifFrontUrl} alt={selectedPokemon.name} />
+                                        <img className="object-contain [image-rendering:pixelated]" src={selectedPokemon.imgGifFrontUrl} alt={selectedPokemon.name} loading="lazy" />
                                     </div>
                                 </div>
                                 <div className="flex-5/9 md:flex-1">

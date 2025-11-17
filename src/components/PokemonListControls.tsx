@@ -268,7 +268,7 @@ function PokemonListControls () {
                                             className='w-full flex justify-between items-center'>
                                             <div className='flex items-center gap-2'>
                                                 <div className='w-6 h-6'>
-                                                    <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} />
+                                                    <img className='w-full h-full object-contain' src={pokemon.imgGifFrontUrl} alt={pokemon.name} loading="lazy" />
                                                 </div>
                                                 <dl>
                                                     <dt className='sr-only'>포켓몬</dt>

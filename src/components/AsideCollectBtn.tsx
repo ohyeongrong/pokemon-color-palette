@@ -60,7 +60,7 @@ function AsideCollectBtn() {
                 type="button"
                 onClick={ ()=> setShowCollect(!showCollect) }>
                 {
-                    lastPokemon && <img className='w-full h-full object-contain' src={lastPokemon.imgGifFrontUrl} alt={lastPokemon.name} />
+                    lastPokemon && <img className='w-full h-full object-contain' loading="lazy" src={lastPokemon.imgGifFrontUrl} alt={lastPokemon.name} />
                 }
             </button>
         </div>

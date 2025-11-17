@@ -9,10 +9,16 @@
 body {
     background: var(--black-color);
     color: white;
-    max-width: 1440px;
-    margin: 0 auto;
+    position: relative;
 }
 
 button {
     cursor: pointer;
 }
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+

@@ -1,13 +1,117 @@
-# React + Vite
+# 🎨 Pokemon Color Palette
+포켓몬 API를 활용해 각 포켓몬의 대표 컬러를 추출하고,
+시각적으로 보여주는 포켓몬 컬러 팔레트 도감 프로젝트입니다.
+이미지 색상 추출, 상태관리, UI/UX, GSAP 애니메이션, 시멘틱 마크업 및 웹 접근성까지
+프론트엔드, 디자인 전반의 기술을 직접 구현하며 경험을 쌓았습니다.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🔗배포 링크
+[#](#)
 
-Currently, two official plugins are available:
+## 📂 GitHub 레포지토리
+[#](#)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 프로젝트 소개
+- **개발 기간**: 2025.10.01 ~ 2025.10.17
+- **기여도**: 100% (기획, 디자인, 개발 직접 진행)
+- **기술 스택**:  
+  - **Frontend**: React, JavaScript(ES6+), TypeScript
+  - **State Management**: Zustand
+  - **API 통신**: Axios(PokeAPI)
+  - **Library**: Color-thief, GSAP
+  - **Styling**: HTML5, Tailwind CSS
+  - **Design Tool**: Figma
+  - **Build & Deploy**: Vite, Git, GitHub
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# pokemon-color-palette
+## ⚙️ 주요 기능 및 구현 내용
+
+### 1. 포켓몬 리스트 구현
+- PokeAPI를 통해 포켓몬 데이터를 비동기 요청 및 **무한 스크롤(Infinite Scroll)** 렌더링.
+- 성능 최적화: **디바운싱(Debounce)**을 적용하여 스크롤 이벤트의 과도한 호출을 방지하고 불필요한 API 요청을 최소화.
+- 반응형 그리드 레이아웃: Tailwind CSS를 활용, 화면 크기에 따라 요청 데이터 갯수를 동적으로 조절하여 모바일/PC 환경에 최적화된 그리드 설계.
+- 동적 인터랙션: GSAP을 활용하여 PC 환경 마우스 오버 시 또는 모바일 환경 터치 시에만 포켓몬 카드 뒷면이 보이는 카드 플립 효과 애니메이션 구현.
+- 사용자 경험(UX) 개선: Top 버튼을 노출하여, 긴 리스트 탐색 후 화면 최상단으로 쉽게 이동할 수 있도록 편의성 확보 
+- UI 디자인: 한눈에 들어오는 카드형 인터페이스 디자인
+
+
+### 2. 이미지 색상 추출 및 데이터 처리
+- Color-Thief 라이브러리를 활용해 각 포켓몬 이미지에서 3가지 대표 컬러(Primary, Secondary, Accent)를 추출하는 로직 구현.
+- 추출된 RGB 색상을 HEX 코드로 변환하여 시각적 팔레트로 표시하고, 코드를 복사하는 기능 제공.
+- 성능 최적화: 추출된 컬러 데이터를 Zustand 캐시 상태에 저장하여, 동일 포켓몬 재방문 시 중복 연산을 방지하고 렌더링 성능 개선.
+
+### 3. 데이터 탐색 및 필터링 기능
+- 포켓몬 **타입별 필터링** 기능 구현
+- 이름 또는 도감번호로 **실시간 검색 + 자동완성** 기능 구현 
+- 도감 번호, 무게, 키 순으로 **정렬 기능** 제공
+- Zustand를 통해 필터링, 검색어, 정렬 기준 등의 상태를 전역적으로 관리하여 컴포넌트 간 데이터 흐름을 효율적으로 제어.
+
+### 4. 상세 정보 모달 및 애니메이션
+- 포켓몬 클릭 시 **모달(Modal)** 컴포넌트로 상세 정보 표시
+- GSAP와 Ref Forwarding을 활용하여 모달이 작게 시작하여 부드럽게 커지는 전환 효과 구현.
+- 반응형 디자인: PC에서는 중앙 집중형 모달, 모바일에서는 화면을 가득 채우는 **전체 화면 모달(Full-screen Modal)**로 디자인을 분리하여 각 환경에 최적화된 UX 제공.
+- 모달 오픈 시 배경 클릭 및 닫기 버튼 클릭 시에 닫기 애니메이션을 우선 실행 후 모달을 제거하는 안전한 로직 구현. 
+
+### 5. 저장 기능
+- 포켓몬 카드에서 '저장'버튼 클릭 시 Aside 영역 리스트 표시
+- 최대 3개까지 저장 및 삭제 기능 제공
+
+### 6. 웹 접근성 고려
+- 시멘틱 태그(section, article, main, aside, dialog 등) HTML5 시멘틱 태그를 적극 활용하여 문서 구조의 명확성 및 SEO 기반 마련.
+- 스크린리더 접근성을 고려한 alt 속성 및 aria-label 등 속성 적용.
+
+---
+
+## 🚀 설치 및 실행 방법
+
+```bash
+# 1. 프로젝트 클론
+git clone [#]
+
+# 2. 패키지 설치
+npm install
+
+# 3. 로컬 실행
+npm run dev
+
+```
+
+## 📂 폴더 구조
+
+```
+src/api         # 포켓몬 API 관련 로직
+src/components  # UI 컴포넌트
+src/constants   # 포켓몬 타입별 컬러 코드 객체 관리
+src/store       # 전역 상태 관리
+src/hooks       # 커스텀 훅
+src/types       # 공용 타입 정의
+
+```
+
+---
+
+## 개발 과정에서 겪었던 문제와 해결
+
+**문제 1. API 데이터 직렬 처리로 인한 느린 렌더링**
+- Promise.all()을 활용해 다수의 비동기 요청을 병렬 처리하여 초기 로딩 속도 개선.
+
+**문제 2. Color-Thief 연산 반복으로 인한 성능 저하**
+- 컬러 캐싱(colorCache)기능을 구현하여 한 번 추출한 데이터는 재사용하도록 Zustand 상태 관리 로직에 적용.
+
+**문제 3. GSAP 애니메이션 적용 시 Ref 에러**
+- useRef와 **ForwardedRef**를 사용하여 DOM 노드를 부모 컴포넌트에서 자식 컴포넌트로 안전하게 전달, React의 Ref 구조에 맞게 애니메이션 처리.
+
+**문제 4. 반응형 무한 스크롤 렌더링 성능 저하**
+- 스크롤 이벤트에 디바운싱을 적용하고, 화면 크기에 따라 추가 데이터 수를 동적으로 조절.
+
+**문제 5. JS로 구현된 코드의 타입 안정성 부재**
+- 초기 구현 후 프로젝트를 점진적으로 TypeScript로 전환하며 타입 추론 및 인터페이스를 정의하여 코드 안정성 향상.
+
+
+## 아쉬운 점 및 개선 아이디어
+- 컬러 포맷 다양화: 현재 HEX 코드만 제공하고 있으나, 추후 RGB, HSL 변환 기능을 추가하여 사용자의 활용도를 높일 계획
+- 모달 오픈 시 **키보드 포커스 트랩(Focus Trap)**을 구현하여 포커스를 모달 내부에 가두고, ESC 키로 모달을 닫을 수 있도록 처리 계획
+- 데이터 영속성 부재: 현재 저장 리스트가 새로고침 시 초기화 되며, 데이터를 유지하도록 개선할 예정
+- Next.js 리팩토링 예정 (SSR 및 성능 최적화): 
+  * 서버 사이드 렌더링(SSR) 도입으로 초기 HTML 로딩 시 콘텐츠를 포함하여 전송, SEO(검색 엔진 최적화) 및 초기 로딩 속도 개선
+  * Next.js의 내장된 이미지 최적화 기능을 활용하여 포켓몬 이미지 로딩 성능을 최적화할 계획

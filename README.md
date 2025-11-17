@@ -5,10 +5,10 @@
 프론트엔드, 디자인 전반의 기술을 직접 구현하며 경험을 쌓았습니다.
 
 ## 🔗배포 링크
-[#](#)
+[https://ohyeongrong.github.io/pokemon-color-palette/](https://ohyeongrong.github.io/pokemon-color-palette/)
 
 ## 📂 GitHub 레포지토리
-[#](#)
+[https://github.com/ohyeongrong/pokemon-color-palette](https://github.com/ohyeongrong/pokemon-color-palette)
 
 ## 📌 프로젝트 소개
 - **개발 기간**: 2025.10.01 ~ 2025.10.17
@@ -110,7 +110,7 @@ src/types       # 공용 타입 정의
 
 ## 아쉬운 점 및 개선 아이디어
 - 컬러 포맷 다양화: 현재 HEX 코드만 제공하고 있으나, 추후 RGB, HSL 변환 기능을 추가하여 사용자의 활용도를 높일 계획
-- 모달 오픈 시 **키보드 포커스 트랩(Focus Trap)**을 구현하여 포커스를 모달 내부에 가두고, ESC 키로 모달을 닫을 수 있도록 처리 계획
+- 모달 오픈 시 키보드 포커스 트랩(Focus Trap)을 구현하여 포커스를 모달 내부에 가두고, ESC 키로 모달을 닫을 수 있도록 처리 계획
 - 데이터 영속성 부재: 현재 저장 리스트가 새로고침 시 초기화 되며, 데이터를 유지하도록 개선할 예정
 - Next.js 리팩토링 예정 (SSR 및 성능 최적화): 
   * 서버 사이드 렌더링(SSR) 도입으로 초기 HTML 로딩 시 콘텐츠를 포함하여 전송, SEO(검색 엔진 최적화) 및 초기 로딩 속도 개선
